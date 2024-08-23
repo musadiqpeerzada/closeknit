@@ -21,12 +21,8 @@
                 <li><a href="{% url 'subscription_list' %}">yours</a></li>
                 <li><a href="{% url 'subscription_shared' %}">shared</a></li>
                 <li><a href="{% url 'subscription_discover' %}">discover</a></li>
-                <li>
-                    <form action="{% url 'logout' %}" method="post" style="display: inline;">
-                        {% csrf_token %}
-                        <button type="submit" class="secondary">Log Out</button>
-                    </form>
-                </li>
+                <li><a href="{% url 'community_list' %}">communities</a></li>
+                <li><a href="{% url 'custom_logout' %}">logout?</a></li>
             {% else %}
                 <li><a href="{% url 'login' %}">Log In</a></li>
             {% endif %}
