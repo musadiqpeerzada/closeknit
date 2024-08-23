@@ -1,0 +1,22 @@
+{% extends 'backend/base.html' %}
+
+{% block content %}
+    <main>
+        <h1>your subscriptions</h1>
+        <section>
+            <a href="{% url 'subscription_add' %}">add a new subscription?</a>
+        </section>
+        <br>
+        <section>
+            <ul>
+                {% for sub in subscriptions %}
+                    <li>
+                        {{ sub.name }} ||
+                        <a href="{% url 'subscription_update' sub.pk %}">Update</a> or
+                        <a href="{% url 'subscription_delete' sub.pk %}">Delete</a>?
+                    </li>
+                {% endfor %}
+            </ul>
+        </section>
+    </main>
+{% endblock %}

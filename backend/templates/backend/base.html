@@ -1,18 +1,40 @@
 <!doctype html>
 <html lang="en">
-  <head>
+<head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="color-scheme" content="light dark">
     <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css"
+            rel="stylesheet"
+            href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css"
     >
     {% block title %}<title>SubShare</title>{% endblock %}
-  </head>
-  <body>
-    <main class="container">
-      {% block content %}{% endblock %}
-    </main>
-  </body>
+</head>
+<body>
+<main class="container">
+    <nav>
+        <ul>
+            <li><strong><a href="{% url 'index' %}">subshare</a></strong></li>
+        </ul>
+        <ul>
+            {% if user.is_authenticated %}
+                <li><a href="{% url 'subscription_list' %}">yours</a></li>
+                <li><a href="{% url 'subscription_shared' %}">shared</a></li>
+                <li><a href="{% url 'subscription_discover' %}">discover</a></li>
+                <li>
+                    <form action="{% url 'logout' %}" method="post" style="display: inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="secondary">Log Out</button>
+                    </form>
+                </li>
+            {% else %}
+                <li><a href="{% url 'login' %}">Log In</a></li>
+            {% endif %}
+        </ul>
+    </nav>
+    <body>
+    {% block content %}{% endblock %}
+    </body>
+</main>
+</body>
 </html>
