@@ -9,6 +9,57 @@
             href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css"
     >
     {% block title %}<title>SubShare</title>{% endblock %}
+    <style>
+        /* Base Styles */
+        nav {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* Toggle button for mobile*/
+        .nav-toggle-label {
+            display: none;
+            cursor: pointer;
+        }
+
+        .nav-toggle-label span {
+            display: block;
+            width: 25px;
+            height: 3px;
+            margin: 5px;
+            background: #333;
+        }
+
+        /* Hide checkbox */
+        #nav-toggle {
+            display: none;
+        }
+
+        /* Mobile styles */
+        @media (max-width: 768px) {
+            .nav-toggle-label {
+                display: block;
+            }
+
+            .nav-links {
+                display: none;
+                width: 100%;
+                text-align: center;
+            }
+
+            #nav-toggle:checked + .nav-toggle-label + .nav-links {
+                display: flex;
+                flex-direction: column;
+            }
+
+            .nav-links li {
+                width: 100%;
+                padding: 10px 0;
+            }
+        }
+    </style>
 </head>
 <body>
 <main class="container">
@@ -16,7 +67,11 @@
         <ul>
             <li><strong><a href="{% url 'index' %}">subshare</a></strong></li>
         </ul>
-        <ul>
+        <input type="checkbox" id="nav-toggle">
+        <label for="nav-toggle" class="nav-toggle-label">
+            <span></span>
+        </label>
+        <ul class="nav-links">
             {% if user.is_authenticated %}
                 <li><a href="{% url 'subscription_list' %}">yours</a></li>
                 <li><a href="{% url 'subscription_shared' %}">shared</a></li>
@@ -24,7 +79,7 @@
                 <li><a href="{% url 'community_list' %}">communities</a></li>
                 <li><a href="{% url 'custom_logout' %}">logout?</a></li>
             {% else %}
-                <li><a href="{% url 'login' %}">Log In</a></li>
+                <li><a href="{% url 'login' %}">login</a></li>
             {% endif %}
         </ul>
     </nav>
