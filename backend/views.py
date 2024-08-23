@@ -198,6 +198,8 @@ class CommunityAddView(generic.CreateView):
 
     def form_valid(self, form):
         form.instance.owner = self.request.user
+        community = form.save()
+        community.members.add(self.request.user)
         return super().form_valid(form)
 
 
