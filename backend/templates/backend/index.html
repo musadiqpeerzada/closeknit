@@ -1,0 +1,33 @@
+{% extends 'backend/base.html' %}
+
+{% block title %}<title>Subscriptions</title>{% endblock %}
+
+{% block content %}
+
+    {% if user.is_authenticated %}
+        <h1>Welcome, {{ user.username }}</h1>
+        <form action="{% url 'logout' %}" method="post">
+            {% csrf_token %}
+            <button type="submit">Log Out</button>
+        </form>
+
+        <br/>
+
+        {% if subscriptions %}
+            <h2>Your subscriptions</h2>
+            <ul>
+                {% for sub in subscriptions %}
+                    <li>{{ sub.name }}</li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No subscriptions are available.</p>
+        {% endif %}
+    {% else %}
+        <p>You are not logged in</p>
+        <a href="{% url 'login' %}">Log In</a>
+    {% endif %}
+
+
+
+{% endblock %}
