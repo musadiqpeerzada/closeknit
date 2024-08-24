@@ -165,10 +165,16 @@ class CommunityListView(generic.ListView):
         )
 
 
+class CommunityUpdateForm(forms.ModelForm):
+    class Meta:
+        model = Community
+        fields = ["name", "is_active", "members"]
+
+
 class CommunityUpdateView(generic.UpdateView):
     template_name = "backend/community/cud.html"
     model = Community
-    fields = ["name", "is_active"]
+    form_class = CommunityUpdateForm
     success_url = reverse_lazy("community_list")
 
     def get_queryset(self):
@@ -197,35 +203,6 @@ class CommunityAddMemberView(generic.FormView):
             username=user_with_mobile_number.username
         ).exists():
             community.members.add(user_with_mobile_number)
-            community.save()
-        return super().form_valid(form)
-
-
-class RemoveCommunityMembersForm(forms.Form):
-    user_name = forms.CharField(label="username", max_length=100)
-
-
-class CommunityRemoveMemberView(generic.FormView):
-    template_name = "backend/community/remove_member.html"
-    form_class = RemoveCommunityMembersForm
-    success_url = reverse_lazy("community_list")
-
-    def form_valid(self, form):
-        user_name = form.cleaned_data["user_name"]
-        community_id = self.kwargs["pk"]
-        user_with_user_name: User | None = get_user(user_name=user_name)
-        if user_with_user_name.username == self.request.user.username:
-            form.add_error(
-                "user_name", "you cannot remove yourself from your community my friend"
-            )
-            return super().form_invalid(form)
-        if user_with_user_name is None:
-            form.add_error("user_name", "User not found")
-            return super().form_invalid(form)
-
-        community = Community.objects.get(pk=community_id)
-        if community.members.filter(username=user_with_user_name.username).exists():
-            community.members.remove(user_with_user_name)
             community.save()
         return super().form_valid(form)
 

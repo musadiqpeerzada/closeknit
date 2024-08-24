@@ -33,11 +33,6 @@ urlpatterns = [
         name="community_add_member",
     ),
     path(
-        "communities/leave/<int:pk>",
-        login_required(views.CommunityRemoveMemberView.as_view()),
-        name="community_remove_member",
-    ),
-    path(
         "communities/delete/<int:pk>",
         login_required(
             views.CommunityDeleteView.as_view(extra_context={"view": "delete"})

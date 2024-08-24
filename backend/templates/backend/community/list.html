@@ -13,9 +13,8 @@
                     <li>
                         {{ community.name }}
                         <a href="{% url 'community_add_member' community.id %}">add member</a>
-                        <a href="{% url 'community_remove_member' community.id %}">remove member</a>
+                        <a href="{% url 'community_update' community.id %}">update</a>
                         <a href="{% url 'community_delete' community.id %}">delete</a>
-                        <a href="{% url 'community_update' community.id %}">edit</a>
                         {% if community.members %}
                             <ul>
                                 {% for member in community.members.all %}
