@@ -15,6 +15,20 @@ def get_user(user_name: str):
         return None
 
 
+def get_all_users_from_communities_the_user_belongs_to(user: User) -> list[User]:
+    assert isinstance(user, User)
+
+    # TODO: horrible query, but it works. fix it later
+    communities_the_user_belongs_to = Community.objects.filter(members=user)
+    print("communities_the_user_belongs_to", communities_the_user_belongs_to)
+    all_users_of_communities_the_user_belongs_to = [
+        user
+        for community in communities_the_user_belongs_to
+        for user in community.members.all()
+    ]
+    return all_users_of_communities_the_user_belongs_to
+
+
 class RegistrationForm(UserCreationForm):
     usable_password = None
 
@@ -49,15 +63,9 @@ class DiscoverSubscriptionListView(generic.ListView):
     context_object_name = "subscriptions"
 
     def get_queryset(self):
-        # TODO: horrible query, but it works. fix it later
-        communities_the_user_belongs_to = Community.objects.filter(
-            members=self.request.user
+        all_users_of_communities_the_user_belongs_to = (
+            get_all_users_from_communities_the_user_belongs_to(self.request.user)
         )
-        all_users_of_communities_the_user_belongs_to = [
-            user
-            for community in communities_the_user_belongs_to
-            for user in community.members.all()
-        ]
         all_subscriptions_of_users_in_communities_the_user_belongs_to = (
             Subscription.objects.filter(
                 owner__in=all_users_of_communities_the_user_belongs_to
@@ -68,22 +76,70 @@ class DiscoverSubscriptionListView(generic.ListView):
         ).exclude(shared_to=self.request.user)
 
 
+class SubscriptionAddForm(forms.ModelForm):
+    shared_to = forms.ModelMultipleChoiceField(
+        queryset=User.objects.none(),
+        required=False,
+    )
+
+    class Meta:
+        model = Subscription
+        fields = ["name", "is_active", "shared_to"]
+
+
 class SubscriptionAddView(generic.CreateView):
     template_name = "backend/subscription/cud.html"
     model = Subscription
-    fields = ["name", "is_active"]
+    form_class = SubscriptionAddForm
     success_url = reverse_lazy("subscription_list")
+
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class)
+        form.instance.owner = self.request.user
+
+        form.fields["shared_to"].queryset = User.objects.filter(
+            pk__in=[
+                user.pk
+                for user in get_all_users_from_communities_the_user_belongs_to(
+                    self.request.user
+                )
+            ]
+        )
+        return form
 
     def form_valid(self, form):
         form.instance.owner = self.request.user
         return super().form_valid(form)
 
 
+class SubscriptionUpdateForm(forms.ModelForm):
+    shared_to = forms.ModelMultipleChoiceField(
+        queryset=User.objects.none(),
+        required=False,
+    )
+
+    class Meta:
+        model = Subscription
+        fields = ["name", "is_active", "shared_to"]
+
+
 class SubscriptionUpdateView(generic.UpdateView):
     template_name = "backend/subscription/cud.html"
     model = Subscription
-    fields = ["name", "is_active"]
+    form_class = SubscriptionUpdateForm
     success_url = reverse_lazy("subscription_list")
+
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class)
+        form.fields["shared_to"].queryset = User.objects.filter(
+            pk__in=[
+                user.pk
+                for user in get_all_users_from_communities_the_user_belongs_to(
+                    self.request.user
+                )
+            ]
+        )
+        return form
 
     def get_queryset(self):
         return Subscription.objects.filter(owner=self.request.user)
