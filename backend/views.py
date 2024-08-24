@@ -1,11 +1,18 @@
-from django.contrib.auth.forms import UserCreationForm
 from django import forms
+from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.urls import reverse_lazy
 from django.views import generic
 from django.views.generic import CreateView
 
 from backend.models import Subscription, Community
+
+
+def get_user(user_name: str):
+    try:
+        return User.objects.get(username=user_name)
+    except User.DoesNotExist:
+        return None
 
 
 class RegistrationForm(UserCreationForm):
@@ -31,15 +38,10 @@ class SubscriptionListView(generic.ListView):
     context_object_name = "subscriptions"
 
     def get_queryset(self):
-        return Subscription.objects.filter(owner=self.request.user)
-
-
-class SharedSubscriptionListView(generic.ListView):
-    template_name = "backend/subscription/shared.html"
-    context_object_name = "subscriptions"
-
-    def get_queryset(self):
-        return Subscription.objects.filter(shared_to=self.request.user)
+        return dict(
+            owned=Subscription.objects.filter(owner=self.request.user),
+            shared=Subscription.objects.filter(shared_to=self.request.user),
+        )
 
 
 class DiscoverSubscriptionListView(generic.ListView):
@@ -132,16 +134,10 @@ class CommunityAddMemberView(generic.FormView):
     form_class = UpdateCommunityMembersForm
     success_url = reverse_lazy("community_list")
 
-    def get_user(self, user_name):
-        try:
-            return User.objects.get(username=user_name)
-        except User.DoesNotExist:
-            return None
-
     def form_valid(self, form):
         user_name = form.cleaned_data["user_name"]
         community_id = self.kwargs["pk"]
-        user_with_mobile_number: User | None = self.get_user(user_name=user_name)
+        user_with_mobile_number: User | None = get_user(user_name=user_name)
         if user_with_mobile_number is None:
             form.add_error("user_name", "User not found")
             return super().form_invalid(form)
@@ -164,16 +160,10 @@ class CommunityRemoveMemberView(generic.FormView):
     form_class = RemoveCommunityMembersForm
     success_url = reverse_lazy("community_list")
 
-    def get_user(self, user_name):
-        try:
-            return User.objects.get(username=user_name)
-        except User.DoesNotExist:
-            return None
-
     def form_valid(self, form):
         user_name = form.cleaned_data["user_name"]
         community_id = self.kwargs["pk"]
-        user_with_user_name: User | None = self.get_user(user_name=user_name)
+        user_with_user_name: User | None = get_user(user_name=user_name)
         if user_with_user_name.username == self.request.user.username:
             form.add_error(
                 "user_name", "you cannot remove yourself from your community my friend"

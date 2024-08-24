@@ -3,24 +3,29 @@
 {% block content %}
     <h1>communities</h1>
     <p>
-        <a href="{% url 'community_add' %}">add community</a>
+        <a href="{% url 'community_add' %}">create community</a>
     </p>
-    <ul>
-        {% for community in communities %}
-            <li>
-                {{ community.name }}
-                <a href="{% url 'community_add_member' community.id %}">add member</a>
-                <a href="{% url 'community_remove_member' community.id %}">remove member</a>
-                <a href="{% url 'community_delete' community.id %}">delete</a>
-                <a href="{% url 'community_update' community.id %}">edit</a>
-                {% if community.members %}
-                    <ul>
-                        {% for member in community.members.all %}
-                            <li>{{ member.username }}</li>
-                        {% endfor %}
-                    </ul>
-                {% endif %}
-            </li>
-        {% endfor %}
-    </ul>
+    <section>
+        {% if communities %}
+            <h3>communities you created</h3>
+            <ul>
+                {% for community in communities %}
+                    <li>
+                        {{ community.name }}
+                        <a href="{% url 'community_add_member' community.id %}">add member</a>
+                        <a href="{% url 'community_remove_member' community.id %}">remove member</a>
+                        <a href="{% url 'community_delete' community.id %}">delete</a>
+                        <a href="{% url 'community_update' community.id %}">edit</a>
+                        {% if community.members %}
+                            <ul>
+                                {% for member in community.members.all %}
+                                    <li>{{ member.username }}</li>
+                                {% endfor %}
+                            </ul>
+                        {% endif %}
+                    </li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    </section>
 {% endblock %}

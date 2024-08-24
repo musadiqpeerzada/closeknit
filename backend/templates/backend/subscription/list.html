@@ -2,14 +2,12 @@
 
 {% block content %}
     <main>
-        <h1>your subscriptions</h1>
         <section>
+            <h1>your subscriptions</h1>
             <a href="{% url 'subscription_add' %}">add a new subscription?</a>
-        </section>
-        <br>
-        <section>
+            <br>
             <ul>
-                {% for sub in subscriptions %}
+                {% for sub in subscriptions.owned %}
                     <li>
                         {{ sub.name }} ||
                         <a href="{% url 'subscription_update' sub.pk %}">Update</a> or
@@ -18,5 +16,19 @@
                 {% endfor %}
             </ul>
         </section>
+
+        {% if subscriptions.shared %}
+            <section>
+                <h1>shared subscriptions</h1>
+                <ul>
+                    {% for sub in subscriptions.shared %}
+                        <li>
+                            {{ sub.name }} by {{ sub.owner }}
+                        </li>
+                    {% endfor %}
+                </ul>
+            </section>
+        {% endif %}
+
     </main>
 {% endblock %}

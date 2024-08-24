@@ -51,11 +51,6 @@ urlpatterns = [
         name="subscription_list",
     ),
     path(
-        "subscriptions/shared",
-        login_required(views.SharedSubscriptionListView.as_view()),
-        name="subscription_shared",
-    ),
-    path(
         "subscriptions/discover",
         login_required(views.DiscoverSubscriptionListView.as_view()),
         name="subscription_discover",

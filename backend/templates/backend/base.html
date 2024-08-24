@@ -73,10 +73,9 @@
         </label>
         <ul class="nav-links">
             {% if user.is_authenticated %}
-                <li><a href="{% url 'subscription_list' %}">yours</a></li>
-                <li><a href="{% url 'subscription_shared' %}">shared</a></li>
-                <li><a href="{% url 'subscription_discover' %}">discover</a></li>
+                <li><a href="{% url 'subscription_list' %}">subscriptions</a></li>
                 <li><a href="{% url 'community_list' %}">communities</a></li>
+                <li><a href="{% url 'subscription_discover' %}">discover</a></li>
                 <li><a href="{% url 'custom_logout' %}">logout?</a></li>
             {% else %}
                 <li><a href="{% url 'login' %}">login</a></li>
