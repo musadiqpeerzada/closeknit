@@ -6,10 +6,10 @@
         <a href="{% url 'community_add' %}">create community</a>
     </p>
     <section>
-        {% if communities %}
+        {% if communities.owned %}
             <h3>communities you created</h3>
             <ul>
-                {% for community in communities %}
+                {% for community in communities.owned %}
                     <li>
                         {{ community.name }}
                         <a href="{% url 'community_add_member' community.id %}">add member</a>
@@ -23,6 +23,17 @@
                                 {% endfor %}
                             </ul>
                         {% endif %}
+                    </li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+        {% if communities.shared %}
+            <h3>communities you are a member of</h3>
+            <ul>
+                {% for community in communities.shared %}
+                    <li>
+                        {{ community.name }} (run by {{ community.owner.username }})
                     </li>
                 {% endfor %}
             </ul>

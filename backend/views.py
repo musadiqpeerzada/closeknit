@@ -71,7 +71,7 @@ class DiscoverSubscriptionListView(generic.ListView):
 class SubscriptionAddView(generic.CreateView):
     template_name = "backend/subscription/cud.html"
     model = Subscription
-    fields = ["name", "is_active", "shared_to"]
+    fields = ["name", "is_active"]
     success_url = reverse_lazy("subscription_list")
 
     def form_valid(self, form):
@@ -82,20 +82,11 @@ class SubscriptionAddView(generic.CreateView):
 class SubscriptionUpdateView(generic.UpdateView):
     template_name = "backend/subscription/cud.html"
     model = Subscription
-    fields = ["name", "is_active", "shared_to"]
+    fields = ["name", "is_active"]
     success_url = reverse_lazy("subscription_list")
 
     def get_queryset(self):
         return Subscription.objects.filter(owner=self.request.user)
-
-    def get_form(self, form_class=None):
-        form = super().get_form(form_class)
-
-        form.fields["shared_to"].queryset = form.fields["shared_to"].queryset.exclude(
-            id=self.request.user.id
-        )
-
-        return form
 
 
 class SubscriptionDeleteView(generic.DeleteView):
@@ -112,7 +103,10 @@ class CommunityListView(generic.ListView):
     context_object_name = "communities"
 
     def get_queryset(self):
-        return Community.objects.filter(owner=self.request.user)
+        return dict(
+            owned=Community.objects.filter(owner=self.request.user),
+            shared=Community.objects.filter(members=self.request.user),
+        )
 
 
 class CommunityUpdateView(generic.UpdateView):
