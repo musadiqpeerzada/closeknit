@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
@@ -5,7 +7,7 @@ from django.urls import reverse_lazy
 from django.views import generic
 from django.views.generic import CreateView
 
-from backend.models import Subscription, Community, Item
+from backend.models import Subscription, Community, Item, Lease
 
 
 def get_user(user_name: str):
@@ -58,24 +60,55 @@ class SubscriptionListView(generic.ListView):
         )
 
 
-class DiscoverSubscriptionListView(generic.ListView):
+class DiscoverListView(generic.ListView):
     template_name = "backend/discover.html"
-    context_object_name = "subscriptions"
+    context_object_name = "discover"
 
-    def get_queryset(self):
+    def get_subscriptions_to_discover(self):
         all_users_of_communities_the_user_belongs_to = (
             get_all_users_from_communities_the_user_belongs_to(self.request.user)
         )
-        print(all_users_of_communities_the_user_belongs_to)
         all_subscriptions_of_users_in_communities_the_user_belongs_to = (
             Subscription.objects.filter(
                 owner__in=all_users_of_communities_the_user_belongs_to
             )
         )
-        print(all_subscriptions_of_users_in_communities_the_user_belongs_to)
         return all_subscriptions_of_users_in_communities_the_user_belongs_to.exclude(
             owner=self.request.user
         ).exclude(shared_to=self.request.user)
+
+    def get_items_to_discover(self):
+        all_users_of_communities_the_user_belongs_to = (
+            get_all_users_from_communities_the_user_belongs_to(self.request.user)
+        )
+        all_items_of_users_in_communities_the_user_belongs_to = Item.objects.filter(
+            owner__in=all_users_of_communities_the_user_belongs_to, is_active=True
+        )
+        items_already_leased_out = Lease.objects.filter(
+            end_date__gt=datetime.now(),
+            item__in=all_items_of_users_in_communities_the_user_belongs_to,
+        )
+
+        return all_items_of_users_in_communities_the_user_belongs_to.exclude(
+            owner=self.request.user
+        ).exclude(pk__in=[lease.item.pk for lease in items_already_leased_out])
+
+    def get_queryset(self):
+        all_users_of_communities_the_user_belongs_to = (
+            get_all_users_from_communities_the_user_belongs_to(self.request.user)
+        )
+        all_subscriptions_of_users_in_communities_the_user_belongs_to = (
+            Subscription.objects.filter(
+                owner__in=all_users_of_communities_the_user_belongs_to
+            )
+        )
+        subscriptions_to_discover = (
+            all_subscriptions_of_users_in_communities_the_user_belongs_to.exclude(
+                owner=self.request.user
+            ).exclude(shared_to=self.request.user)
+        )
+        items_to_discover = self.get_items_to_discover()
+        return dict(subscriptions=subscriptions_to_discover, items=items_to_discover)
 
 
 class SubscriptionAddForm(forms.ModelForm):

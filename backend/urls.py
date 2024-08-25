@@ -47,7 +47,7 @@ urlpatterns = [
     ),
     path(
         "subscriptions/discover",
-        login_required(views.DiscoverSubscriptionListView.as_view()),
+        login_required(views.DiscoverListView.as_view()),
         name="subscription_discover",
     ),
     path(

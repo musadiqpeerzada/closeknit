@@ -5,12 +5,29 @@
     <section>
         <p>these are the subscriptions from the communities you are a part of</p>
         <p>Feel free to request them access!</p>
-        <ul>
-            {% for sub in subscriptions %}
-                <li>
-                    {{ sub.name }} by {{ sub.owner }}
-                </li>
-            {% endfor %}
-        </ul>
-    </section>
+        {% if discover.subscriptions %}
+            <section>
+                <h2>Subscriptions</h2>
+                <ul>
+                    {% for sub in discover.subscriptions %}
+                        <li>
+                            {{ sub.name }} by {{ sub.owner }}
+                        </li>
+                    {% endfor %}
+                </ul>
+            </section>
+        {% endif %}
+
+        {% if discover.items %}
+            <section>
+                <h2>Items</h2>
+                <ul>
+                    {% for item in discover.items %}
+                        <li>
+                            {{ item.name }} by {{ item.owner }}
+                        </li>
+                    {% endfor %}
+                </ul>
+            </section>
+        {% endif %}
 {% endblock %}
