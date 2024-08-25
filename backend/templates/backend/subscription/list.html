@@ -4,7 +4,9 @@
     <main>
         <section>
             <h1>your subscriptions</h1>
-            <a href="{% url 'subscription_add' %}">add a new subscription?</a>
+            <section>
+                <a href="{% url 'subscription_add' %}">add a new subscription?</a>
+            </section>
             <br>
             <ul>
                 {% for sub in subscriptions.owned %}

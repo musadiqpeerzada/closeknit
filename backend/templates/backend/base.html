@@ -80,6 +80,7 @@
         <ul class="nav-links">
             {% if user.is_authenticated %}
                 <li><a href="{% url 'subscription_list' %}">subscriptions</a></li>
+                <li><a href="{% url 'item_list' %}">items</a></li>
                 <li><a href="{% url 'community_list' %}">communities</a></li>
                 <li><a href="{% url 'subscription_discover' %}">discover</a></li>
                 <li><a href="{% url 'custom_logout' %}">logout?</a></li>

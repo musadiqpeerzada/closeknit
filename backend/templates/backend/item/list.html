@@ -1,0 +1,33 @@
+{% extends 'backend/base.html' %}
+
+{% block content %}
+    <h1>items</h1>
+    <section>
+        <a href="{% url 'item_add' %}">add your item</a>
+    </section>
+    {% if items.owned %}
+        <section>
+            <h2>owned</h2>
+            <ul>
+                {% for item in items.owned %}
+                    <li>
+                        {{ item.name }}
+                        <a href="{% url 'item_update' item.pk %}">update</a>
+                        <a href="{% url 'item_delete' item.pk %}">delete</a>
+                    </li>
+                {% endfor %}
+            </ul>
+        </section>
+    {% endif %}
+
+    {% if items.leased %}
+        <section>
+            <h2>borrowed</h2>
+            <ul>
+                {% for item in items.leased %}
+                    <li>{{ item.name }} lent by {{ item.owner }}</li>
+                {% endfor %}
+            </ul>
+        </section>
+    {% endif %}
+{% endblock %}

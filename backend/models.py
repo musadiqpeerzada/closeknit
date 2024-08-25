@@ -1,4 +1,6 @@
+from django.core.exceptions import ValidationError
 from django.db import models
+from django.utils import timezone
 
 
 class Subscription(models.Model):
@@ -29,3 +31,48 @@ class Community(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class Item(models.Model):
+    name = models.CharField(max_length=100)
+    is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    owner = models.ForeignKey("auth.User", on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"{self.name} (owned by {self.owner.username})"
+
+    def is_leased(self):
+        # Returns True if the item is currently leased
+        current_lease = (
+            Lease.objects.filter(item=self)
+            .filter(start_date__lte=timezone.now(), end_date__gte=timezone.now())
+            .exists()
+        )
+        return current_lease
+
+
+class Lease(models.Model):
+    item = models.ForeignKey(Item, on_delete=models.CASCADE)
+    lessee = models.ForeignKey(
+        "auth.User", related_name="leases", on_delete=models.CASCADE
+    )
+    start_date = models.DateTimeField()
+    end_date = models.DateTimeField()
+
+    def clean(self):
+        # Ensure that there is no overlap in leases for the same item
+        if self.end_date <= self.start_date:
+            raise ValidationError("End date must be after start date.")
+
+        overlapping_leases = Lease.objects.filter(
+            item=self.item, start_date__lt=self.end_date, end_date__gt=self.start_date
+        ).exclude(pk=self.id)
+
+        if overlapping_leases.exists():
+            raise ValidationError(
+                "This item is already leased during the given period."
+            )
+
+    def __str__(self):
+        return f"Lease of {self.item.name} by {self.lessee.username} from {self.start_date} to {self.end_date}"

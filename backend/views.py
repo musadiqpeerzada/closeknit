@@ -5,7 +5,7 @@ from django.urls import reverse_lazy
 from django.views import generic
 from django.views.generic import CreateView
 
-from backend.models import Subscription, Community
+from backend.models import Subscription, Community, Item
 
 
 def get_user(user_name: str):
@@ -59,18 +59,20 @@ class SubscriptionListView(generic.ListView):
 
 
 class DiscoverSubscriptionListView(generic.ListView):
-    template_name = "backend/subscription/discover.html"
+    template_name = "backend/discover.html"
     context_object_name = "subscriptions"
 
     def get_queryset(self):
         all_users_of_communities_the_user_belongs_to = (
             get_all_users_from_communities_the_user_belongs_to(self.request.user)
         )
+        print(all_users_of_communities_the_user_belongs_to)
         all_subscriptions_of_users_in_communities_the_user_belongs_to = (
             Subscription.objects.filter(
                 owner__in=all_users_of_communities_the_user_belongs_to
             )
         )
+        print(all_subscriptions_of_users_in_communities_the_user_belongs_to)
         return all_subscriptions_of_users_in_communities_the_user_belongs_to.exclude(
             owner=self.request.user
         ).exclude(shared_to=self.request.user)
@@ -227,3 +229,44 @@ class CommunityDeleteView(generic.DeleteView):
 
     def get_queryset(self):
         return Community.objects.filter(owner=self.request.user)
+
+
+class ItemsListView(generic.ListView):
+    template_name = "backend/item/list.html"
+    context_object_name = "items"
+
+    def get_queryset(self):
+        return dict(
+            owned=Item.objects.filter(owner=self.request.user),
+            leased=Item.objects.filter(lease__lessee=self.request.user),
+        )
+
+
+class ItemCreateView(generic.CreateView):
+    template_name = "backend/item/cud.html"
+    model = Item
+    fields = ["name"]
+    success_url = reverse_lazy("item_list")
+
+    def form_valid(self, form):
+        form.instance.owner = self.request.user
+        return super().form_valid(form)
+
+
+class ItemUpdateView(generic.UpdateView):
+    template_name = "backend/item/cud.html"
+    model = Item
+    fields = ["name", "is_active"]
+    success_url = reverse_lazy("item_list")
+
+    def get_queryset(self):
+        return Item.objects.filter(owner=self.request.user)
+
+
+class ItemDeleteView(generic.DeleteView):
+    template_name = "backend/item/cud.html"
+    model = Item
+    success_url = reverse_lazy("item_list")
+
+    def get_queryset(self):
+        return Item.objects.filter(owner=self.request.user)

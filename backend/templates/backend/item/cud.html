@@ -1,0 +1,23 @@
+{% extends 'backend/base.html' %}
+
+{% block content %}
+    {% if view == 'add' %}
+        <h1>add item</h1>
+        <form method="post">{% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">add</button>
+        </form>
+    {% elif view == 'update' %}
+        <h1>update</h1>
+        <form method="post">{% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Save</button>
+        </form>
+    {% elif view == 'delete' %}
+        <p>Are you sure you want to delete "{{ object }}"?</p>
+        <form method="post">{% csrf_token %}
+            <button type="submit">Confirm</button>
+        </form>
+    {% endif %}
+{% endblock %}
+

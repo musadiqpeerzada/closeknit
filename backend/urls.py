@@ -71,4 +71,25 @@ urlpatterns = [
         ),
         name="subscription_delete",
     ),
+    # items
+    path(
+        "items/list",
+        login_required(views.ItemsListView.as_view()),
+        name="item_list",
+    ),
+    path(
+        "items/add",
+        login_required(views.ItemCreateView.as_view(extra_context={"view": "add"})),
+        name="item_add",
+    ),
+    path(
+        "items/update/<int:pk>",
+        login_required(views.ItemUpdateView.as_view(extra_context={"view": "update"})),
+        name="item_update",
+    ),
+    path(
+        "items/delete/<int:pk>",
+        login_required(views.ItemDeleteView.as_view(extra_context={"view": "delete"})),
+        name="item_delete",
+    ),
 ]
