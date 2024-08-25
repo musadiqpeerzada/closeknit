@@ -271,7 +271,8 @@ class ItemsListView(generic.ListView):
     def get_queryset(self):
         return dict(
             owned=Item.objects.filter(owner=self.request.user),
-            leased=Item.objects.filter(lease__lessee=self.request.user),
+            leased=Lease.objects.filter(lessee=self.request.user),
+            leased_out=Lease.objects.filter(item__owner=self.request.user),
         )
 
 
@@ -303,3 +304,56 @@ class ItemDeleteView(generic.DeleteView):
 
     def get_queryset(self):
         return Item.objects.filter(owner=self.request.user)
+
+
+class LeaseCreateView(generic.CreateView):
+    template_name = "backend/lease/cud.html"
+    model = Lease
+    fields = ["item", "lessee", "start_date", "end_date"]
+    success_url = reverse_lazy("item_list")
+
+    def get_queryset(self):
+        return Item.objects.filter(owner=self.request.user)
+
+    def form_valid(self, form):
+        form.instance.owner = self.request.user
+        return super().form_valid(form)
+
+    def get_form(self, *args, **kwargs):
+        form = super().get_form(*args, **kwargs)
+        form.fields["start_date"].widget = forms.widgets.DateTimeInput(
+            attrs={"type": "datetime-local"}
+        )
+        form.fields["end_date"].widget = forms.widgets.DateTimeInput(
+            attrs={"type": "datetime-local"}
+        )
+        return form
+
+
+class LeaseUpdateView(generic.UpdateView):
+    template_name = "backend/lease/cud.html"
+    model = Lease
+    fields = ["item", "lessee", "start_date", "end_date"]
+    success_url = reverse_lazy("item_list")
+
+    def get_queryset(self):
+        return Lease.objects.filter(item__owner=self.request.user)
+
+    def get_form(self, *args, **kwargs):
+        form = super().get_form(*args, **kwargs)
+        form.fields["start_date"].widget = forms.widgets.DateTimeInput(
+            attrs={"type": "datetime-local"}
+        )
+        form.fields["end_date"].widget = forms.widgets.DateTimeInput(
+            attrs={"type": "datetime-local"}
+        )
+        return form
+
+
+class LeaseDeleteView(generic.DeleteView):
+    template_name = "backend/lease/cud.html"
+    model = Lease
+    success_url = reverse_lazy("item_list")
+
+    def get_queryset(self):
+        return Lease.objects.filter(item__owner=self.request.user)

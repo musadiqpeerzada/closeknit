@@ -3,7 +3,9 @@
 {% block content %}
     <h1>items</h1>
     <section>
-        <a href="{% url 'item_add' %}">add your item</a>
+        <a href="{% url 'item_add' %}">add your item?</a>
+        <br/>
+        <a href="{% url 'lease_add' %}">register a borrow?</a>
     </section>
     {% if items.owned %}
         <section>
@@ -24,8 +26,23 @@
         <section>
             <h2>borrowed</h2>
             <ul>
-                {% for item in items.leased %}
-                    <li>{{ item.name }} lent by {{ item.owner }}</li>
+                {% for l in items.leased %}
+                    <li>{{ l.item.name }} lent by {{ l.item.owner }} from {{ l.start_date }} to {{ l.end_date }}</li>
+                {% endfor %}
+            </ul>
+        </section>
+    {% endif %}
+
+    {% if items.leased_out %}
+        <section>
+            <h2>lent</h2>
+            <ul>
+                {% for l in items.leased_out %}
+                    <li>
+                        {{ l.item.name }} lent to {{ l.leasee }} from {{ l.start_date }} to {{ l.end_date }}
+                        <a href="{% url 'lease_update' l.pk %}">update</a>
+                        <a href="{% url 'lease_delete' l.pk %}">delete</a>
+                    </li>
                 {% endfor %}
             </ul>
         </section>

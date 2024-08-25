@@ -92,4 +92,20 @@ urlpatterns = [
         login_required(views.ItemDeleteView.as_view(extra_context={"view": "delete"})),
         name="item_delete",
     ),
+    # leases
+    path(
+        "leases/add",
+        login_required(views.LeaseCreateView.as_view(extra_context={"view": "add"})),
+        name="lease_add",
+    ),
+    path(
+        "leases/update/<int:pk>",
+        login_required(views.LeaseUpdateView.as_view(extra_context={"view": "update"})),
+        name="lease_update",
+    ),
+    path(
+        "leases/delete/<int:pk>",
+        login_required(views.LeaseDeleteView.as_view(extra_context={"view": "delete"})),
+        name="lease_delete",
+    ),
 ]

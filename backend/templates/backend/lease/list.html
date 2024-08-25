@@ -1,0 +1,39 @@
+{% extends 'backend/base.html' %}
+
+{% block title %}<title>Leases</title>{% endblock %}
+
+{% block content %}
+
+    <main>
+        <section>
+            <h1>your leases</h1>
+            <section>
+                <a href="{% url 'lease_add' %}">add a new lease?</a>
+            </section>
+            <br>
+            <ul>
+                {% for lease in leases.owned %}
+                    <li>
+                        {{ lease.name }}
+                        <a href="{% url 'lease_update' lease.pk %}">Update</a> or
+                        <a href="{% url 'lease_delete' lease.pk %}">Delete</a>?
+                    </li>
+                {% endfor %}
+            </ul>
+        </section>
+
+        {% if leases.shared %}
+            <section>
+                <h1>shared leases</h1>
+                <ul>
+                    {% for lease in leases.shared %}
+                        <li>
+                            {{ lease.name }} by {{ lease.owner }}
+                        </li>
+                    {% endfor %}
+                </ul>
+            </section>
+        {% endif %}
+
+    </main>
+{% endblock %}
