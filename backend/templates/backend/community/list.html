@@ -1,41 +1,64 @@
 {% extends 'backend/base.html' %}
 
 {% block content %}
-    <h1>communities</h1>
-    <p>
-        <a href="{% url 'community_add' %}">create community</a>
-    </p>
-    <section>
-        {% if communities.owned %}
-            <h3>communities you created</h3>
-            <ul>
-                {% for community in communities.owned %}
-                    <li>
-                        {{ community.name }}
-                        <a href="{% url 'community_add_member' community.id %}">add member</a>
-                        <a href="{% url 'community_update' community.id %}">update</a>
-                        <a href="{% url 'community_delete' community.id %}">delete</a>
-                        {% if community.members %}
-                            <ul>
-                                {% for member in community.members.all %}
-                                    <li>{{ member.username }}</li>
-                                {% endfor %}
-                            </ul>
-                        {% endif %}
-                    </li>
-                {% endfor %}
-            </ul>
-        {% endif %}
+    <div>
+        <div class="mb-5">
+            <h1 class="title">Communities</h1>
+            <a href="{% url 'community_add' %}" class="button is-primary">
+                <span>+ Create</span>
+            </a>
+        </div>
 
-        {% if communities.shared %}
-            <h3>communities you are a member of</h3>
-            <ul>
-                {% for community in communities.shared %}
-                    <li>
-                        {{ community.name }} (run by {{ community.owner.username }})
-                    </li>
-                {% endfor %}
-            </ul>
-        {% endif %}
-    </section>
+        <section>
+            {% if communities.owned %}
+                <h3 class="title is-4">You Created</h3>
+                <div>
+                    {% for community in communities.owned %}
+                        <!-- Card Begin -->
+                        <div class="card mb-4">
+                            <!-- Card Header: First Row -->
+                            <header class="card-header">
+                                <p class="card-header-title">
+                                    <strong>{{ community.name }}</strong>
+                                </p>
+                                <div class="card-header-icon">
+                                    <a href="{% url 'community_add_member' community.id %}"
+                                       class="button is-link is-small mr-2">+</a>
+                                    <a href="{% url 'community_update' community.id %}"
+                                       class="button is-info is-small mr-2">Update</a>
+                                    <a href="{% url 'community_delete' community.id %}"
+                                       class="button is-danger is-small">Delete</a>
+                                </div>
+                            </header>
+
+                            <!-- Card Content: Second Row -->
+                            <div class="card-content">
+                                {% if community.members %}
+                                    <ul>
+                                        {% for member in community.members.all %}
+                                            <li>{{ member.username }}</li>
+                                        {% endfor %}
+                                    </ul>
+                                {% else %}
+                                    <p>No members.</p>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <!-- Card End -->
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            {% if communities.shared %}
+                <h3 class="title is-4 mt-5">You Are a Member Of</h3>
+                <ul class="list is-hoverable">
+                    {% for community in communities.shared %}
+                        <li class="box">
+                            <strong>{{ community.name }}</strong> (run by <em>{{ community.owner.username }}</em>)
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        </section>
+    </div>
 {% endblock %}

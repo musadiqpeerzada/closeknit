@@ -4,95 +4,84 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="color-scheme" content="light dark">
+
     <link
             rel="stylesheet"
-            href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css"
+            href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css"
     >
-    <script
-            src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
-            crossorigin="anonymous" referrerpolicy="no-referrer"
-    ></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+            integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet"/>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     {% block title %}<title>SubShare</title>{% endblock %}
-    <style>
-        /* Base Styles */
-        nav {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        /* Toggle button for mobile*/
-        .nav-toggle-label {
-            display: none;
-            cursor: pointer;
-        }
-
-        .nav-toggle-label span {
-            display: block;
-            width: 25px;
-            height: 3px;
-            margin: 5px;
-            background: #333;
-        }
-
-        /* Hide checkbox */
-        #nav-toggle {
-            display: none;
-        }
-
-        /* Mobile styles */
-        @media (max-width: 768px) {
-            .nav-toggle-label {
-                display: block;
-            }
-
-            .nav-links {
-                display: none;
-                width: 100%;
-                text-align: center;
-            }
-
-            #nav-toggle:checked + .nav-toggle-label + .nav-links {
-                display: flex;
-                flex-direction: column;
-            }
-
-            .nav-links li {
-                width: 100%;
-                padding: 10px 0;
-            }
-        }
-    </style>
 </head>
+
 <body>
-<main class="container">
-    <nav>
-        <ul>
-            <li><strong><a href="{% url 'index' %}">subshare</a></strong></li>
-        </ul>
-        <input type="checkbox" id="nav-toggle">
-        <label for="nav-toggle" class="nav-toggle-label">
-            <span></span>
-        </label>
-        <ul class="nav-links">
-            {% if user.is_authenticated %}
-                <li><a href="{% url 'subscription_list' %}">subscriptions</a></li>
-                <li><a href="{% url 'item_list' %}">items</a></li>
-                <li><a href="{% url 'community_list' %}">communities</a></li>
-                <li><a href="{% url 'subscription_discover' %}">discover</a></li>
-                <li><a href="{% url 'custom_logout' %}">logout?</a></li>
-            {% else %}
-                <li><a href="{% url 'login' %}">login</a></li>
-            {% endif %}
-        </ul>
+<main class="container is-fluid p-0">
+    <nav class="navbar px-4" role="navigation" aria-label="main navigation">
+        <div class="navbar-brand">
+            <a class="navbar-item" href="{% url 'index' %}">
+                <b>Subshare</b>
+            </a>
+
+            <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false"
+               data-target="navbarBasicExample">
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+            </a>
+        </div>
+
+        <div id="navbarBasicExample" class="navbar-menu">
+            <div class="navbar-start">
+                {% if user.is_authenticated %}
+                    <a class="navbar-item" href="{% url 'subscription_list' %}">Subscriptions</a>
+                    <a class="navbar-item" href="{% url 'item_list' %}">Items</a>
+                    <a class="navbar-item" href="{% url 'community_list' %}">Communities</a>
+                    <a class="navbar-item" href="{% url 'subscription_discover' %}">Discover</a>
+                {% endif %}
+            </div>
+
+            <div class="navbar-end">
+                <div class="navbar-item">
+                    <div class="buttons">
+                        {% if user.is_authenticated %}
+                            <a class="button is-light" href="{% url 'custom_logout' %}">
+                                Log out
+                            </a>
+                        {% else %}
+                            <a class="button is-primary" href="{% url 'signup' %}">
+                                <strong>Sign up</strong>
+                            </a>
+                            <a class="button is-light" href="{% url 'login' %}">
+                                Log in
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
     </nav>
-    <body>
-    {% block content %}{% endblock %}
-    </body>
+
+    <div class="container section">
+        {% block content %}{% endblock %}
+    </div>
 </main>
 </body>
-{% block scripts %}{% endblock %}
+
+{% block scripts %}
+    <script>
+        $(document).ready(function () {
+            // Check for click events on the navbar burger icon
+            $(".navbar-burger").click(function () {
+                // Toggle the "is-active" class on both the "navbar-burger" and the "navbar-menu"
+                $(".navbar-burger").toggleClass("is-active");
+                $(".navbar-menu").toggleClass("is-active");
+            });
+        });
+    </script>
+{% endblock %}
+
 </html>

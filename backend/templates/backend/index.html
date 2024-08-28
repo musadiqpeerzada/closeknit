@@ -3,23 +3,24 @@
 {% block title %}<title>Subscriptions</title>{% endblock %}
 
 {% block content %}
-
-    {% if user.is_authenticated %}
-        <h1>welcome, {{ user.username }}</h1>
-        <p>
-            you can either start off by <a href="{% url 'subscription_list' %}">managing your subscriptions</a> or
-            <a href="{% url 'subscription_discover' %}">discover new ones</a>!
-        </p>
-    {% else %}
-        <p>
-            Subshare, an easy way to discover & share subscriptions in a community!
-        </p>
-        <p>
-            You know why you are here by now we guess, so go ahead and <a href="{% url 'login' %}">login</a> or <a
-                href="{% url 'signup' %}">signup</a> to get started!
-        </p>
-    {% endif %}
-
-
-
+    <section class="hero">
+        <div class="hero-body">
+            <div>
+                <h1 class="title">
+                    Subshare
+                </h1>
+                {% if user.is_authenticated %}
+                    <h2 class="subtitle">
+                        Welcome, {{ user.username|title }}!
+                    </h2>
+                {% else %}
+                    <h2 class="subtitle">
+                        Subshare, an easy way to discover & share subscriptions in a community! Go ahead and <a
+                            href="{% url 'login' %}">login</a> or <a
+                            href="{% url 'signup' %}">signup</a> to get started!
+                    </h2>
+                {% endif %}
+            </div>
+        </div>
+    </section>
 {% endblock %}
