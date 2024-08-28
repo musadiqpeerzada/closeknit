@@ -1,11 +1,16 @@
 {% extends "backend/index.html" %}
-
+{% load crispy_forms_tags %}
+{% load widget_tweaks %}
 
 {% block content %}
-    <h2>sign up</h2>
-    <form method="post">
-        {% csrf_token %}
-        {{ form }}
-        <button type="submit">Sign Up</button>
-    </form>
+    <section class="section">
+        <div class="container">
+            <h2 class="title is-3">Sign Up</h2>
+            <form method="post" class="box">
+                {% csrf_token %}
+                {{ form|crispy }}
+                <button type="submit" class="button is-primary is-fullwidth">Sign Up</button>
+            </form>
+        </div>
+    </section>
 {% endblock %}

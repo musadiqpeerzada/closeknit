@@ -115,6 +115,7 @@ class SubscriptionAddForm(forms.ModelForm):
     shared_to = forms.ModelMultipleChoiceField(
         queryset=User.objects.none(),
         required=False,
+        widget=forms.CheckboxSelectMultiple,
     )
 
     class Meta:
@@ -151,6 +152,7 @@ class SubscriptionUpdateForm(forms.ModelForm):
     shared_to = forms.ModelMultipleChoiceField(
         queryset=User.objects.none(),
         required=False,
+        widget=forms.CheckboxSelectMultiple,
     )
 
     class Meta:
@@ -321,6 +323,8 @@ class LeaseCreateView(generic.CreateView):
 
     def get_form(self, *args, **kwargs):
         form = super().get_form(*args, **kwargs)
+        # change label of the lesses field to "Borrower"
+        form.fields["lessee"].label = "Borrower"
         form.fields["start_date"].widget = forms.widgets.DateTimeInput(
             attrs={"type": "datetime-local"}
         )

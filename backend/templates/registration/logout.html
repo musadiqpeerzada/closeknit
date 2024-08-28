@@ -1,9 +1,13 @@
 {% extends 'backend/base.html' %}
 
 {% block content %}
-    <form action="{% url 'logout' %}" method="post" style="display: inline;">
-        {% csrf_token %}
-        <p>sure you want to log out?</p>
-        <button type="submit">Log Out</button>
-    </form>
+    <section class="section">
+        <div class="container">
+            <form action="{% url 'logout' %}" method="post" class="has-text-centered">
+                {% csrf_token %}
+                <p class="subtitle is-4">Are you sure you want to log out?</p>
+                <button type="submit" class="button is-danger is-medium">Log Out</button>
+            </form>
+        </div>
+    </section>
 {% endblock %}
