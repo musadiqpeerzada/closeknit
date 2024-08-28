@@ -308,22 +308,22 @@ class ItemDeleteView(generic.DeleteView):
         return Item.objects.filter(owner=self.request.user)
 
 
-class LeaseCreateView(generic.CreateView):
-    template_name = "backend/lease/cud.html"
-    model = Lease
-    fields = ["item", "lessee", "start_date", "end_date"]
-    success_url = reverse_lazy("item_list")
-
-    def get_queryset(self):
-        return Item.objects.filter(owner=self.request.user)
-
-    def form_valid(self, form):
-        form.instance.owner = self.request.user
-        return super().form_valid(form)
-
+class LeaseBaseView(generic.View):
     def get_form(self, *args, **kwargs):
         form = super().get_form(*args, **kwargs)
-        # change label of the lesses field to "Borrower"
+        form.fields["item"].queryset = Item.objects.filter(
+            owner=self.request.user
+        ).exclude(is_active=False)
+
+        form.fields["lessee"].queryset = User.objects.filter(
+            pk__in=[
+                user.pk
+                for user in get_all_users_from_communities_the_user_belongs_to(
+                    self.request.user
+                )
+            ]
+        ).exclude(pk=self.request.user.pk)
+
         form.fields["lessee"].label = "Borrower"
         form.fields["start_date"].widget = forms.widgets.DateTimeInput(
             attrs={"type": "datetime-local"}
@@ -331,27 +331,26 @@ class LeaseCreateView(generic.CreateView):
         form.fields["end_date"].widget = forms.widgets.DateTimeInput(
             attrs={"type": "datetime-local"}
         )
+
         return form
 
 
-class LeaseUpdateView(generic.UpdateView):
+class LeaseCreateView(LeaseBaseView, generic.CreateView):
     template_name = "backend/lease/cud.html"
     model = Lease
     fields = ["item", "lessee", "start_date", "end_date"]
     success_url = reverse_lazy("item_list")
 
-    def get_queryset(self):
-        return Lease.objects.filter(item__owner=self.request.user)
+    def form_valid(self, form):
+        form.instance.owner = self.request.user
+        return super().form_valid(form)
 
-    def get_form(self, *args, **kwargs):
-        form = super().get_form(*args, **kwargs)
-        form.fields["start_date"].widget = forms.widgets.DateTimeInput(
-            attrs={"type": "datetime-local"}
-        )
-        form.fields["end_date"].widget = forms.widgets.DateTimeInput(
-            attrs={"type": "datetime-local"}
-        )
-        return form
+
+class LeaseUpdateView(LeaseBaseView, generic.UpdateView):
+    template_name = "backend/lease/cud.html"
+    model = Lease
+    fields = ["item", "lessee", "start_date", "end_date"]
+    success_url = reverse_lazy("item_list")
 
 
 class LeaseDeleteView(generic.DeleteView):
