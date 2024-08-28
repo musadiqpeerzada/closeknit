@@ -1,27 +1,41 @@
 {% extends 'backend/base.html' %}
+{% load crispy_forms_tags %}
+{% load widget_tweaks %}
 
 {% block content %}
-    {% if view == 'add' %}
-        <h1>add subscription</h1>
-        <form method="post">{% csrf_token %}
-            {{ form.as_p }}
-            <button type="submit">add</button>
-        </form>
-    {% elif view == 'update' %}
-        <form method="post">{% csrf_token %}
-            {{ form.as_p }}
-            <button type="submit">Save</button>
-        </form>
-    {% elif view == 'delete' %}
-        <p>Are you sure you want to delete "{{ object }}"?</p>
-        <form method="post">{% csrf_token %}
-            <button type="submit">Confirm</button>
-        </form>
-    {% endif %}
+    <section class="section">
+        <div class="container">
+            {% if view == 'add' %}
+                <h1 class="title is-3">Add Subscription</h1>
+                <form method="post" class="form">{% csrf_token %}
+                    {{ form|crispy }}
+                    <button type="submit" class="button is-primary">Add</button>
+                </form>
+            {% elif view == 'update' %}
+                <h1 class="title is-3">Update Subscription</h1>
+                <form method="post" class="form">{% csrf_token %}
+                    {{ form|crispy }}
+                    <button type="submit" class="button is-info">Save</button>
+                </form>
+            {% elif view == 'delete' %}
+                <h1 class="title is-3">Delete Subscription</h1>
+                <article class="message is-danger">
+                    <div class="message-body">
+                        Are you sure you want to delete "<strong>{{ object }}</strong>"?
+                    </div>
+                </article>
+                <form method="post" class="form">{% csrf_token %}
+                    <button type="submit" class="button is-danger">Confirm</button>
+                </form>
+            {% endif %}
+        </div>
+    </section>
 {% endblock %}
 
 {% block scripts %}
     <script>
-        $('#id_shared_to').select2();
+        $(document).ready(function () {
+            $('#div_id_shared_to').select2();  // This is assuming that 'shared_to' is the field using Select2
+        });
     </script>
 {% endblock %}

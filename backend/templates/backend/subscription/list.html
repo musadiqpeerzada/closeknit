@@ -1,36 +1,55 @@
 {% extends 'backend/base.html' %}
 
 {% block content %}
-    <main>
+    <div>
         <section>
-            <h1>your subscriptions</h1>
-            <section>
-                <a href="{% url 'subscription_add' %}">add a new subscription?</a>
-            </section>
-            <br>
-            <ul>
-                {% for sub in subscriptions.owned %}
-                    <li>
-                        {{ sub.name }} ||
-                        <a href="{% url 'subscription_update' sub.pk %}">Update</a> or
-                        <a href="{% url 'subscription_delete' sub.pk %}">Delete</a>?
-                    </li>
-                {% endfor %}
-            </ul>
+            <h1 class="title is-3">Your Subscriptions</h1>
+            <div class="mb-4">
+                <a href="{% url 'subscription_add' %}" class="button is-primary">
+                    <span>+ Add</span>
+                </a>
+            </div>
+
+            {% if subscriptions.owned %}
+                <ul class="list is-hoverable">
+                    {% for sub in subscriptions.owned %}
+                        <li class="box">
+                            <div class="columns is-vcentered">
+                                <div class="column">
+                                    {{ sub.name|title }}
+                                </div>
+                                <div class="column is-narrow has-text-right">
+                                    <a href="{% url 'subscription_update' sub.pk %}"
+                                       class="button is-info is-small">
+                                        Update
+                                    </a>
+                                    <a href="{% url 'subscription_delete' sub.pk %}"
+                                       class="button is-danger is-small">
+                                        Delete
+                                    </a>
+                                </div>
+                            </div>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>No subscriptions available.</p>
+            {% endif %}
         </section>
 
         {% if subscriptions.shared %}
             <section>
-                <h1>shared subscriptions</h1>
-                <ul>
+                <h1 class="title is-3">Shared Subscriptions</h1>
+                <ul class="list is-hoverable">
                     {% for sub in subscriptions.shared %}
-                        <li>
-                            {{ sub.name }} by {{ sub.owner }}
+                        <li class="box">
+                            <p>
+                                <strong>{{ sub.name }}</strong> by <em>{{ sub.owner }}</em>
+                            </p>
                         </li>
                     {% endfor %}
                 </ul>
             </section>
         {% endif %}
-
-    </main>
+    </div>
 {% endblock %}

@@ -1,50 +1,84 @@
 {% extends 'backend/base.html' %}
 
 {% block content %}
-    <h1>items</h1>
     <section>
-        <a href="{% url 'item_add' %}">add your item?</a>
-        <br/>
-        <a href="{% url 'lease_add' %}">register a borrow?</a>
+        <div>
+            <h1 class="title">Items</h1>
+
+            <div class="py-4">
+                <a href="{% url 'item_add' %}" class="button is-primary">
+                    <span>+ Add</span>
+                </a>
+                <a href="{% url 'lease_add' %}" class="button is-link ml-2">
+                    <span>Register a borrow?</span>
+                </a>
+            </div>
+
+            {% if items.owned %}
+                <section>
+                    <h2 class="title is-4">Owned</h2>
+                    <ul class="list is-hoverable">
+                        {% for item in items.owned %}
+                            <li class="box">
+                                <div class="columns is-vcentered">
+                                    <div class="column">
+                                        <strong>{{ item.name }}</strong>
+                                    </div>
+                                    <div class="column is-narrow has-text-right">
+                                        <a href="{% url 'item_update' item.pk %}" class="button is-info is-small">
+                                            Update
+                                        </a>
+                                        <a href="{% url 'item_delete' item.pk %}" class="button is-danger is-small">
+                                            Delete
+                                        </a>
+                                    </div>
+                                </div>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </section>
+            {% endif %}
+
+            {% if items.leased %}
+                <section class="mt-5">
+                    <h2 class="title is-4">Borrowed</h2>
+                    <ul class="list is-hoverable">
+                        {% for l in items.leased %}
+                            <li class="box">
+                                <strong>{{ l.item.name }}</strong> lent by <em>{{ l.item.owner }}</em> from
+                                <span>{{ l.start_date }}</span> to <span>{{ l.end_date }}</span>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </section>
+            {% endif %}
+
+            {% if items.leased_out %}
+                <section class="mt-5">
+                    <h2 class="title is-4">Lent</h2>
+                    <ul class="list is-hoverable">
+                        {% for l in items.leased_out %}
+                            <li class="box">
+                                <div class="columns is-vcentered">
+                                    <div class="column">
+                                        <strong>{{ l.item.name }}</strong> lent to <em>{{ l.leasee }}</em> from
+                                        <span>{{ l.start_date }}</span> to <span>{{ l.end_date }}</span>
+                                    </div>
+                                    <div class="column is-narrow has-text-right">
+                                        <a href="{% url 'lease_update' l.pk %}" class="button is-info is-small">
+                                            Update
+                                        </a>
+                                        <a href="{% url 'lease_delete' l.pk %}" class="button is-danger is-small">
+                                            Delete
+                                        </a>
+                                    </div>
+                                </div>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </section>
+            {% endif %}
+
+        </div>
     </section>
-    {% if items.owned %}
-        <section>
-            <h2>owned</h2>
-            <ul>
-                {% for item in items.owned %}
-                    <li>
-                        {{ item.name }}
-                        <a href="{% url 'item_update' item.pk %}">update</a>
-                        <a href="{% url 'item_delete' item.pk %}">delete</a>
-                    </li>
-                {% endfor %}
-            </ul>
-        </section>
-    {% endif %}
-
-    {% if items.leased %}
-        <section>
-            <h2>borrowed</h2>
-            <ul>
-                {% for l in items.leased %}
-                    <li>{{ l.item.name }} lent by {{ l.item.owner }} from {{ l.start_date }} to {{ l.end_date }}</li>
-                {% endfor %}
-            </ul>
-        </section>
-    {% endif %}
-
-    {% if items.leased_out %}
-        <section>
-            <h2>lent</h2>
-            <ul>
-                {% for l in items.leased_out %}
-                    <li>
-                        {{ l.item.name }} lent to {{ l.leasee }} from {{ l.start_date }} to {{ l.end_date }}
-                        <a href="{% url 'lease_update' l.pk %}">update</a>
-                        <a href="{% url 'lease_delete' l.pk %}">delete</a>
-                    </li>
-                {% endfor %}
-            </ul>
-        </section>
-    {% endif %}
 {% endblock %}
