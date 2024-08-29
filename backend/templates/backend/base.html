@@ -14,6 +14,11 @@
 
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet"/>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+
     {% block title %}<title>Tribepool</title>{% endblock %}
 </head>
 
@@ -83,41 +88,4 @@
         });
     </script>
 {% endblock %}
-
-<style>
-    @import url('https://fonts.googleapis.com/css2?family=SUSE:wght@100..800&display=swap');
-
-    .select {
-        width: 100%;
-    }
-
-    * {
-        font-family: "SUSE", sans-serif;
-        font-weight: 400;
-        font-style: normal;
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-    }
-
-    body {
-        line-height: 1.6;
-        background-color: #f7f7f7;
-        min-height: 100vh;
-    }
-
-    .logo {
-        font-size: 1.6rem;
-        font-weight: bold;
-        text-decoration: none;
-    }
-
-    .highlight-number {
-        font-size: 3rem;
-        font-weight: bold;
-        color: #3273dc;
-        margin-bottom: 0.5rem;
-    }
-</style>
-
 </html>
