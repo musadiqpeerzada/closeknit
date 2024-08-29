@@ -4,11 +4,13 @@
     <div class="container">
         <h1 class="title is-3">Discover</h1>
         {% if discover.subscriptions or discover.items %}
-            <p class="content">These are the subscriptions from the communities you are a part of.</p>
-            <p class="content">Feel free to request access!</p>
+            <p class="content is-underlined">
+                Feel free to walk up to the owner and request sharing!
+            </p>
+            <p class="content"></p>
 
             {% if discover.subscriptions %}
-                <section>
+                <section class="mt-4">
                     <h2 class="title is-4">Subscriptions</h2>
                     <ul class="list is-hoverable">
                         {% for sub in discover.subscriptions %}
@@ -21,7 +23,7 @@
             {% endif %}
 
             {% if discover.items %}
-                <section class="mt-5">
+                <section class="mt-4">
                     <h2 class="title is-4">Items</h2>
                     <ul class="list is-hoverable">
                         {% for item in discover.items %}

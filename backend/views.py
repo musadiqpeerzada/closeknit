@@ -22,7 +22,6 @@ def get_all_users_from_communities_the_user_belongs_to(user: User) -> list[User]
 
     # TODO: horrible query, but it works. fix it later
     communities_the_user_belongs_to = Community.objects.filter(members=user)
-    print("communities_the_user_belongs_to", communities_the_user_belongs_to)
     all_users_of_communities_the_user_belongs_to = [
         user
         for community in communities_the_user_belongs_to
