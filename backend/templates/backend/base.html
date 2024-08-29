@@ -14,7 +14,7 @@
 
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet"/>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-    {% block title %}<title>SubShare</title>{% endblock %}
+    {% block title %}<title>Tribepool</title>{% endblock %}
 </head>
 
 <body>
@@ -22,7 +22,7 @@
     <nav class="navbar px-4" role="navigation" aria-label="main navigation">
         <div class="navbar-brand">
             <a class="navbar-item logo" href="{% url 'index' %}">
-                Subshare
+                Tribepool
             </a>
 
             <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false"
@@ -85,15 +85,14 @@
 {% endblock %}
 
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400;1,700;1,900&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=SUSE:wght@100..800&display=swap');
 
-    {# to style select2 widgets #}
     .select {
         width: 100%;
     }
 
     * {
-        font-family: "Merriweather", serif;
+        font-family: "SUSE", sans-serif;
         font-weight: 400;
         font-style: normal;
         margin: 0;
@@ -103,22 +102,14 @@
 
     body {
         line-height: 1.6;
-        color: #333;
         background-color: #f7f7f7;
         min-height: 100vh;
     }
 
     .logo {
-        font-size: 20px;
+        font-size: 1.6rem;
         font-weight: bold;
-        color: #b92b27;
         text-decoration: none;
-    }
-
-    .button {
-        background-color: #b92b27;
-        color: #fff;
-        font-weight: bold;
     }
 </style>
 

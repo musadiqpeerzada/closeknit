@@ -38,21 +38,23 @@
             {% else %}
                 <p>No subscriptions available.</p>
             {% endif %}
+
+            {% if subscriptions.shared %}
+                <section class="pt-4">
+                    <h1 class="title is-4">Shared to you</h1>
+                    <ul class="list is-hoverable">
+                        {% for sub in subscriptions.shared %}
+                            <li class="box">
+                                <p>
+                                    <strong>{{ sub.name }}</strong> by <em>{{ sub.owner }}</em>
+                                </p>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </section>
+            {% endif %}
         </section>
 
-        {% if subscriptions.shared %}
-            <section class="pt-4">
-                <h1 class="title is-4">Shared to you</h1>
-                <ul class="list is-hoverable">
-                    {% for sub in subscriptions.shared %}
-                        <li class="box">
-                            <p>
-                                <strong>{{ sub.name }}</strong> by <em>{{ sub.owner }}</em>
-                            </p>
-                        </li>
-                    {% endfor %}
-                </ul>
-            </section>
-        {% endif %}
+
     </div>
 {% endblock %}

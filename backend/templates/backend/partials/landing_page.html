@@ -1,16 +1,47 @@
+<style>
+
+    .title {
+        font-size: 2.5rem;
+    }
+
+    .subtitle {
+        font-size: 1.5rem;
+    }
+
+    #scrollingText {
+        display: inline-block;
+    }
+
+    @media screen and (max-width: 768px) {
+        .title {
+            font-size: 2rem;
+        }
+
+        .subtitle {
+            font-size: 1.25rem;
+        }
+    }
+</style>
+
 <div class="container-fluid marginless">
     <section class="hero is-bold is-medium">
         <div class="hero-body">
-            <div class="container has-text-centered">
-                <h1 class="title is-1">
-                    Welcome to Subshare
+            <div class="container">
+                <h1 class="title has-text-centered">
+                    Why buy a new
                 </h1>
-                <h2 class="subtitle">
-                    Share & Borrow within Your Community
+                <h1 class="title has-text-centered">
+                    <span id="scrollingText" class="is-underlined">Book</span>
+                </h1>
+                <h1 class="title has-text-centered">
+                    when you could borrow?
+                </h1>
+                <h2 class="subtitle has-text-centered mt-4">
+                    Join tribepool and start sharing resources within your community
                 </h2>
-                <a class="button is-light is-large" href="{% url 'signup' %}">
-                    <span>Get Started</span>
-                </a>
+                <div class="has-text-centered mt-5">
+                    <a class="button is-primary is-medium" href="{% url 'signup' %}">Get Started</a>
+                </div>
             </div>
         </div>
     </section>
@@ -18,29 +49,24 @@
     <section class="section">
         <div class="container">
             <h2 class="title is-2 has-text-centered">How It Works</h2>
-            <div class="columns">
-                <div class="column">
-                    <div class="box">
-                        <div class="icon-text">
-                            <span class="title is-4">List Items</span>
-                        </div>
-                        <p>Share your books, electronics, and other items with your community.</p>
+            <div class="columns is-variable">
+                <div class="column is-flex">
+                    <div class="box is-flex-grow-1 is-flex is-flex-direction-column">
+                        <h3 class="title is-4 mb-4">List Items</h3>
+                        <p class="is-flex-grow-1">Share your books, electronics, and other items with your
+                            community.</p>
                     </div>
                 </div>
-                <div class="column">
-                    <div class="box">
-                        <div class="icon-text">
-                            <span class="title is-4">Borrow</span>
-                        </div>
-                        <p>Find and borrow items you need from your friends.</p>
+                <div class="column is-flex">
+                    <div class="box is-flex-grow-1 is-flex is-flex-direction-column">
+                        <h3 class="title is-4 mb-4">Borrow</h3>
+                        <p class="is-flex-grow-1">Find and borrow items you need from your friends.</p>
                     </div>
                 </div>
-                <div class="column">
-                    <div class="box">
-                        <div class="icon-text">
-                            <span class="title is-4">Track</span>
-                        </div>
-                        <p>Keep track of your lent items and borrowed subscriptions.</p>
+                <div class="column is-flex">
+                    <div class="box is-flex-grow-1 is-flex is-flex-direction-column">
+                        <h3 class="title is-4 mb-4">Track</h3>
+                        <p class="is-flex-grow-1">Keep track of your lent items and borrowed subscriptions.</p>
                     </div>
                 </div>
             </div>
@@ -63,8 +89,23 @@
     <footer class="footer">
         <div class="content has-text-centered">
             <p>
-                © 2024 TribePool. All rights reserved.
+                © 2024 Tribepool. All rights reserved.
             </p>
         </div>
     </footer>
 </div>
+
+{% block script %}
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const words = ['Book', 'Pen-drive', 'Phone', 'Camera', 'Toolkit'];
+            let currentIndex = 0;
+            const scrollingText = document.getElementById('scrollingText');
+
+            setInterval(() => {
+                currentIndex = (currentIndex + 1) % words.length;
+                scrollingText.textContent = words[currentIndex];
+            }, 2000);
+        });
+    </script>
+{% endblock %}

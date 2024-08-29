@@ -15,7 +15,7 @@
             </section>
 
             {% if items.owned %}
-                <section>
+                <section class="pt-4">
                     <h2 class="title is-4">Owned</h2>
                     <ul class="list is-hoverable">
                         {% for item in items.owned %}
@@ -40,7 +40,7 @@
             {% endif %}
 
             {% if items.leased %}
-                <section class="mt-5">
+                <section class="pt-4">
                     <h2 class="title is-4">Borrowed</h2>
                     <ul class="list is-hoverable">
                         {% for l in items.leased %}
