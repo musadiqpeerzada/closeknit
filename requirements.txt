@@ -6,3 +6,4 @@ django-crispy-forms
 crispy-bulma
 django-widget-tweaks
 django-select2
+whitenoise
