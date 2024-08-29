@@ -1,7 +1,7 @@
 {% extends 'backend/base.html' %}
 
 {% block content %}
-    <div>
+    <section class="section">
         <div class="mb-5">
             <h1 class="title">Communities</h1>
             <a href="{% url 'community_add' %}" class="button is-primary">
@@ -60,5 +60,5 @@
                 </ul>
             {% endif %}
         </section>
-    </div>
+    </section>
 {% endblock %}

@@ -1,7 +1,7 @@
 {% extends 'backend/base.html' %}
 
 {% block content %}
-    <div class="container">
+    <section class="section">
         <h1 class="title is-3">Discover</h1>
         {% if discover.subscriptions or discover.items %}
             <p class="content is-underlined">
@@ -40,5 +40,5 @@
                 No subscriptions or items available unfortunately.
             </p>
         {% endif %}
-    </div>
+    </section>
 {% endblock %}

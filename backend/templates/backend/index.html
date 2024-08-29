@@ -3,24 +3,13 @@
 {% block title %}<title>Subscriptions</title>{% endblock %}
 
 {% block content %}
-    <section class="hero">
-        <div class="hero-body">
-            <div>
-                <h1 class="title">
-                    Subshare
-                </h1>
-                {% if user.is_authenticated %}
-                    <h2 class="subtitle">
-                        Welcome, {{ user.username|title }}!
-                    </h2>
-                {% else %}
-                    <h2 class="subtitle">
-                        Subshare, an easy way to discover & share subscriptions in a community! Go ahead and <a
-                            href="{% url 'login' %}">login</a> or <a
-                            href="{% url 'signup' %}">signup</a> to get started!
-                    </h2>
-                {% endif %}
-            </div>
-        </div>
-    </section>
+    {% if user.is_authenticated %}
+        <section class="section">
+            <h2 class="subtitle">
+                Welcome, {{ user.username|title }}!
+            </h2>
+        </section>
+    {% else %}
+        {% include 'backend/partials/landing_page.html' %}
+    {% endif %}
 {% endblock %}
