@@ -139,7 +139,7 @@ class SubscriptionAddView(generic.CreateView):
                     self.request.user
                 )
             ]
-        )
+        ).exclude(pk=self.request.user.pk)
         return form
 
     def form_valid(self, form):
@@ -174,7 +174,7 @@ class SubscriptionUpdateView(generic.UpdateView):
                     self.request.user
                 )
             ]
-        )
+        ).exclude(pk=self.request.user.pk)
         return form
 
     def get_queryset(self):

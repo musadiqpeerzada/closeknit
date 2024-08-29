@@ -3,7 +3,7 @@
 {% block content %}
     <div>
         <section>
-            <h1 class="title is-3">Your Subscriptions</h1>
+            <h1 class="title is-3">Subscriptions</h1>
             <div class="mb-4">
                 <a href="{% url 'subscription_add' %}" class="button is-primary">
                     <span>+ Add</span>
@@ -11,35 +11,38 @@
             </div>
 
             {% if subscriptions.owned %}
-                <ul class="list is-hoverable">
-                    {% for sub in subscriptions.owned %}
-                        <li class="box">
-                            <div class="columns is-vcentered">
-                                <div class="column">
-                                    {{ sub.name|title }}
+                <section class="pt-4">
+                    <h2 class="title is-4">Yours</h2>
+                    <ul class="list is-hoverable">
+                        {% for sub in subscriptions.owned %}
+                            <li class="box">
+                                <div class="columns is-vcentered">
+                                    <div class="column">
+                                        {{ sub.name|title }}
+                                    </div>
+                                    <div class="column is-narrow has-text-right">
+                                        <a href="{% url 'subscription_update' sub.pk %}"
+                                           class="button is-info is-small">
+                                            Update
+                                        </a>
+                                        <a href="{% url 'subscription_delete' sub.pk %}"
+                                           class="button is-danger is-small">
+                                            Delete
+                                        </a>
+                                    </div>
                                 </div>
-                                <div class="column is-narrow has-text-right">
-                                    <a href="{% url 'subscription_update' sub.pk %}"
-                                       class="button is-info is-small">
-                                        Update
-                                    </a>
-                                    <a href="{% url 'subscription_delete' sub.pk %}"
-                                       class="button is-danger is-small">
-                                        Delete
-                                    </a>
-                                </div>
-                            </div>
-                        </li>
-                    {% endfor %}
-                </ul>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </section>
             {% else %}
                 <p>No subscriptions available.</p>
             {% endif %}
         </section>
 
         {% if subscriptions.shared %}
-            <section>
-                <h1 class="title is-3">Shared Subscriptions</h1>
+            <section class="pt-4">
+                <h1 class="title is-4">Shared to you</h1>
                 <ul class="list is-hoverable">
                     {% for sub in subscriptions.shared %}
                         <li class="box">
