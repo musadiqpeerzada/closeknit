@@ -21,8 +21,8 @@
 <main class="container is-fluid p-0">
     <nav class="navbar px-4" role="navigation" aria-label="main navigation">
         <div class="navbar-brand">
-            <a class="navbar-item" href="{% url 'index' %}">
-                <b>Subshare</b>
+            <a class="navbar-item logo" href="{% url 'index' %}">
+                Subshare
             </a>
 
             <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false"
@@ -85,9 +85,40 @@
 {% endblock %}
 
 <style>
+    @import url('https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400;1,700;1,900&display=swap');
+
     {# to style select2 widgets #}
     .select {
         width: 100%;
+    }
+
+    * {
+        font-family: "Merriweather", serif;
+        font-weight: 400;
+        font-style: normal;
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        line-height: 1.6;
+        color: #333;
+        background-color: #f7f7f7;
+        min-height: 100vh;
+    }
+
+    .logo {
+        font-size: 20px;
+        font-weight: bold;
+        color: #b92b27;
+        text-decoration: none;
+    }
+
+    .button {
+        background-color: #b92b27;
+        color: #fff;
+        font-weight: bold;
     }
 </style>
 
