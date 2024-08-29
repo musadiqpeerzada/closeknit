@@ -5,9 +5,49 @@
 {% block content %}
     {% if user.is_authenticated %}
         <section class="section">
-            <h2 class="subtitle">
-                Welcome, {{ user.username|title }}!
-            </h2>
+            <div class="container">
+                <h1 class="title is-2 has-text-centered">
+                    Welcome back to Tribepool!
+                </h1>
+                <p class="subtitle is-4 has-text-centered">
+                    Your sharing community is thriving. Here's what's new:
+                </p>
+
+                <div class="columns is-multiline mt-6">
+                    <div class="column is-half">
+                        <div class="box">
+                            <h2 class="title is-4">Shared</h2>
+                            <p class="highlight-number">{{ total_shared_items }}</p>
+                            <p>You're sharing {{ your_items_count }} items</p>
+                            <p>You're sharing {{ your_subscriptions_count }} subscriptions</p>
+                            <div>
+                                <a href="{% url 'item_list' %}" class="button is-light mt-3">Manage Items</a>
+                                <a href="{% url 'subscription_list' %}" class="button is-light mt-3">
+                                    Manage Subscriptions
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="column is-half">
+                        <div class="box">
+                            <h2 class="title is-4">Available</h2>
+                            <p class="highlight-number">{{ total_available_items }}</p>
+                            <p>{{ items_available_for_lease }} items available</p>
+                            <p>{{ subscriptions_available_for_share }} subscriptions could be shared</p>
+                            <a href="{% url 'subscription_discover' %}" class="button is-light mt-3">Discover</a>
+                        </div>
+                    </div>
+                    <div class="column is-half">
+                        <div class="box">
+                            <h2 class="title is-4">Community Highlights</h2>
+                            <p class="highlight-number">{{ total_active_members_across_communities }}</p>
+                            <p>There are {{ total_active_members_across_communities }} active members across</p>
+                            <p>You belong to {{ total_communities_user_belongs_to }} communities</p>
+                            <a href="{% url 'community_list' %}" class="button is-light mt-3">Community Forum</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </section>
     {% else %}
         {% include 'backend/partials/landing_page.html' %}

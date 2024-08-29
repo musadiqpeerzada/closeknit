@@ -3,6 +3,8 @@ from datetime import datetime
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
+from django.db.models import QuerySet
+from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.views import generic
 from django.views.generic import CreateView
@@ -30,6 +32,37 @@ def get_all_users_from_communities_the_user_belongs_to(user: User) -> list[User]
     return all_users_of_communities_the_user_belongs_to
 
 
+def get_items_available_for_lease(user: User) -> QuerySet[Item]:
+    all_users_of_communities_the_user_belongs_to = (
+        get_all_users_from_communities_the_user_belongs_to(user)
+    )
+    all_items_of_users_in_communities_the_user_belongs_to = Item.objects.filter(
+        owner__in=all_users_of_communities_the_user_belongs_to, is_active=True
+    )
+    items_already_leased_out = Lease.objects.filter(
+        end_date__gt=datetime.now(),
+        item__in=all_items_of_users_in_communities_the_user_belongs_to,
+    )
+
+    return all_items_of_users_in_communities_the_user_belongs_to.exclude(
+        owner=user
+    ).exclude(pk__in=[lease.item.pk for lease in items_already_leased_out])
+
+
+def get_subscriptions_available_for_share(user: User) -> QuerySet[Subscription]:
+    all_users_of_communities_the_user_belongs_to = (
+        get_all_users_from_communities_the_user_belongs_to(user)
+    )
+    all_subscriptions_of_users_in_communities_the_user_belongs_to = (
+        Subscription.objects.filter(
+            owner__in=all_users_of_communities_the_user_belongs_to
+        )
+    )
+    return all_subscriptions_of_users_in_communities_the_user_belongs_to.exclude(
+        owner=user
+    ).exclude(shared_to=user)
+
+
 class RegistrationForm(UserCreationForm):
     usable_password = None
 
@@ -44,8 +77,62 @@ class LogoutView(generic.TemplateView):
     template_name = "registration/logout.html"
 
 
+def index_view(request):
+    if not request.user.is_authenticated:
+        return render(request, "backend/index.html")
+
+    users_in_communities = get_all_users_from_communities_the_user_belongs_to(
+        request.user
+    )
+    your_items_count = Item.objects.filter(owner=request.user).count()
+    your_subscriptions_count = Subscription.objects.filter(owner=request.user).count()
+    items_available_for_lease = get_items_available_for_lease(request.user).count()
+    subscriptions_available_for_share = get_subscriptions_available_for_share(
+        user=request.user
+    ).count()
+    total_active_members_across_communities = len(users_in_communities)
+    total_communities_user_belongs_to = len(
+        Community.objects.filter(members=request.user)
+    )
+    dashboard_data = dict(
+        your_items_count=your_items_count,
+        your_subscriptions_count=your_subscriptions_count,
+        total_shared_items=your_items_count + your_subscriptions_count,
+        items_available_for_lease=items_available_for_lease,
+        subscriptions_available_for_share=subscriptions_available_for_share,
+        total_available_items=items_available_for_lease
+        + subscriptions_available_for_share,
+        total_communities_user_belongs_to=total_communities_user_belongs_to,
+        total_active_members_across_communities=total_active_members_across_communities,
+    )
+    return render(request, "backend/index.html", dashboard_data)
+
+
 class IndexView(generic.TemplateView):
     template_name = "backend/index.html"
+
+    def get_context_data(self):
+        users_in_communities = get_all_users_from_communities_the_user_belongs_to(
+            self.request.user
+        )
+        your_items_count = Item.objects.filter(owner=self.request.user).count()
+        your_subscriptions_count = Subscription.objects.filter(
+            owner=self.request.user
+        ).count()
+        items_available_for_lease = get_items_available_for_lease(
+            self.request.user
+        ).count()
+        subscriptions_available_for_share = get_subscriptions_available_for_share(
+            user=self.request.user
+        ).count()
+        total_active_members_across_communities = len(users_in_communities)
+        return dict(
+            your_items_count=your_items_count,
+            your_subscriptions_count=your_subscriptions_count,
+            items_available_for_lease=items_available_for_lease,
+            subscriptions_available_for_share=subscriptions_available_for_share,
+            total_active_members_across_communities=total_active_members_across_communities,
+        )
 
 
 class SubscriptionListView(generic.ListView):
