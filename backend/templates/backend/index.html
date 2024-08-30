@@ -16,7 +16,17 @@
                 <div class="columns is-multiline mt-6">
                     <div class="column is-half">
                         <div class="box">
-                            <h2 class="title is-4">Shared</h2>
+                            <h2 class="title is-4">Available to borrow</h2>
+                            <p class="highlight-number">{{ total_available_items }}</p>
+                            <p>{{ items_available_for_lease }} items available</p>
+                            <p>{{ subscriptions_available_for_share }} subscriptions could be shared</p>
+                            <a href="{% url 'subscription_discover' %}" class="button is-light mt-3">Discover</a>
+                        </div>
+                    </div>
+
+                    <div class="column is-half">
+                        <div class="box">
+                            <h2 class="title is-4">Shared by you</h2>
                             <p class="highlight-number">{{ total_shared_items }}</p>
                             <p>You're sharing {{ your_items_count }} items</p>
                             <p>You're sharing {{ your_subscriptions_count }} subscriptions</p>
@@ -28,15 +38,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="column is-half">
-                        <div class="box">
-                            <h2 class="title is-4">Available</h2>
-                            <p class="highlight-number">{{ total_available_items }}</p>
-                            <p>{{ items_available_for_lease }} items available</p>
-                            <p>{{ subscriptions_available_for_share }} subscriptions could be shared</p>
-                            <a href="{% url 'subscription_discover' %}" class="button is-light mt-3">Discover</a>
-                        </div>
-                    </div>
+
                     <div class="column is-half">
                         <div class="box">
                             <h2 class="title is-4">Community Highlights</h2>
