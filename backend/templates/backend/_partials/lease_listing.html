@@ -1,0 +1,25 @@
+<div class="columns is-multiline">
+    {% for leased_item in items %}
+        <div class="column is-one-third pl-0">
+            <div class="card">
+                <div class="card-content">
+                    <p class="title is-4">{{ leased_item.item.name | title }}</p>
+                    <p>To <em>{{ leased_item.item.owner | title }}</em> from
+                        <span>{{ leased_item.start_date|date:"Y-m-d" }}</span>
+                        to
+                        <span>{{ leased_item.end_date|date:"Y-m-d" }}</span></p>
+                    {% if leased_item.item.owner == user %}
+                        <div class="column is-narrow has-text-right">
+                            <a href="{% url 'lease_update' leased_item.pk %}" class="button is-info is-small">
+                                Update
+                            </a>
+                            <a href="{% url 'lease_delete' leased_item.pk %}" class="button is-danger is-small">
+                                Delete
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+</div>

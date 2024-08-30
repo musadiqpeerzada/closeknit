@@ -1,0 +1,22 @@
+<div class="columns is-multiline">
+    {% for item in items %}
+        <div class="column is-one-third pl-0">
+            <div class="card">
+                <div class="card-content">
+                    <p class="title is-4">{{ item.name | title }}</p>
+                    <p>From <em>{{ item.owner | title }}</em></p>
+                    {% if item.owner == user %}
+                        <div class="column is-narrow has-text-right">
+                            <a href="{% url 'item_update' item.pk %}" class="button is-info is-small">
+                                Update
+                            </a>
+                            <a href="{% url 'item_delete' item.pk %}" class="button is-danger is-small">
+                                Delete
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+</div>

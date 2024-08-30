@@ -12,26 +12,14 @@
             {% if discover.subscriptions %}
                 <section class="mt-4">
                     <h2 class="title is-4">Subscriptions</h2>
-                    <ul class="list is-hoverable">
-                        {% for sub in discover.subscriptions %}
-                            <li class="box">
-                                <strong>{{ sub.name }}</strong> by <em>{{ sub.owner }}</em>
-                            </li>
-                        {% endfor %}
-                    </ul>
+                    {% include 'backend/_partials/subscription_listing.html' with subscriptions=discover.subscriptions %}
                 </section>
             {% endif %}
 
             {% if discover.items %}
                 <section class="mt-4">
                     <h2 class="title is-4">Items</h2>
-                    <ul class="list is-hoverable">
-                        {% for item in discover.items %}
-                            <li class="box">
-                                <strong>{{ item.name }}</strong> by <em>{{ item.owner }}</em>
-                            </li>
-                        {% endfor %}
-                    </ul>
+                    {% include 'backend/_partials/item_listing.html' with items=discover.items %}
                 </section>
             {% endif %}
 
