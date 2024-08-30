@@ -28,8 +28,8 @@ SECRET_KEY = os.environ.get("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["tribepool.bharatkalluri.com", "localhost"]
-CSRF_TRUSTED_ORIGINS = ["https://tribepool.bharatkalluri.com"]
+ALLOWED_HOSTS = ["tribepool.xyz", "www.tribepool.xyz", "localhost"]
+CSRF_TRUSTED_ORIGINS = ["https://tribepool.xyz", "https://www.tribepool.xyz"]
 
 # Application definition
 
