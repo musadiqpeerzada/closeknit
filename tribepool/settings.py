@@ -18,6 +18,15 @@ import dj_database_url
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# Ensure Django uses HTTPS
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+SECURE_SSL_REDIRECT = True
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
+
+# django-allauth specific settings
+ACCOUNT_DEFAULT_HTTP_PROTOCOL = 'https'
+
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
@@ -133,6 +142,7 @@ SOCIALACCOUNT_PROVIDERS = {
         "APP": {
             "client_id": os.environ.get("GOOGLE_AUTH_CLIENT_ID"),
             "secret": os.environ.get("GOOGLE_AUTH_CLIENT_SECRET"),
+            "key": "",
         },
         "OAUTH_PKCE_ENABLED": True,
         "FETCH_USERINFO": True,
