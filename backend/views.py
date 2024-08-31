@@ -1,15 +1,17 @@
 from datetime import datetime
 
 from django import forms
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.db.models import QuerySet
-from django.shortcuts import render
-from django.urls import reverse_lazy
+from django.http import HttpResponseBadRequest
+from django.shortcuts import render, get_object_or_404, redirect
+from django.urls import reverse_lazy, reverse
 from django.views import generic
 from django.views.generic import CreateView
 
-from backend.models import Subscription, Community, Item, Lease
+from backend.models import Subscription, Community, Item, Lease, Invite
 
 
 def get_user(user_name: str):
@@ -313,6 +315,11 @@ class CommunityAddMemberView(generic.FormView):
     form_class = UpdateCommunityMembersForm
     success_url = reverse_lazy("community_list")
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["community"] = Community.objects.get(pk=self.kwargs["pk"])
+        return context
+
     def form_valid(self, form):
         user_name = form.cleaned_data["user_name"]
         community_id = self.kwargs["pk"]
@@ -446,3 +453,39 @@ class LeaseDeleteView(generic.DeleteView):
 
     def get_queryset(self):
         return Lease.objects.filter(item__owner=self.request.user)
+
+
+@login_required
+def send_invite(request, community_id):
+    community = get_object_or_404(Community, id=community_id, owner=request.user)
+    if request.method == "POST":
+        invite = Invite.objects.create(community=community, created_by=request.user)
+        invite_url = request.build_absolute_uri(
+            reverse("accept_invite", args=[str(invite.token)])
+        )
+        return render(
+            request,
+            "backend/invite/show_invite_link.html",
+            {"invite_url": invite_url, "community": community},
+        )
+    return render(request, "backend/invite/send_invite.html", {"community": community})
+
+
+def accept_invite(request, token):
+    invite = get_object_or_404(Invite, token=token)
+    if invite.is_used or invite.is_expired():
+        return HttpResponseBadRequest("This invite is no longer valid.")
+
+    if request.user.is_authenticated:
+        if request.method == "POST":
+            if invite.use_invite(request.user):
+                invite.community.members.add(request.user)
+                return redirect("community_list")
+            else:
+                return HttpResponseBadRequest("Unable to use this invite.")
+        return render(request, "backend/invite/confirm_invite.html", {"invite": invite})
+    else:
+        # TODO: get google account log using reverse or something along those lines
+        return redirect(
+            f"/accounts/google/login/?process=login&next={reverse('accept_invite', args=[token])}"
+        )
