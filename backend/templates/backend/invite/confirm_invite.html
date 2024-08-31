@@ -1,0 +1,18 @@
+{% extends "backend/base.html" %}
+
+{% block content %}
+    <section class="section">
+        <div class="container">
+            <h1 class="title">Confirm Invitation</h1>
+            <p class="subtitle">You've been invited to join {{ invite.community.name }}</p>
+            <form method="post">
+                {% csrf_token %}
+                <div class="field">
+                    <div class="control">
+                        <button class="button is-primary" type="submit">Join Community</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </section>
+{% endblock %}

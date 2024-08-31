@@ -1,0 +1,28 @@
+{% extends "backend/base.html" %}
+{% load i18n %}
+{% load account socialaccount %}
+
+{% block head_title %}{% trans "Sign In" %}{% endblock %}
+
+{% block content %}
+    <section class="section">
+        <div class="container">
+            <h1 class="title has-text-centered">{% trans "Sign In" %}</h1>
+            <div class="columns is-centered">
+                <div class="column is-one-third">
+                    <div class="box">
+                        {% get_providers as socialaccount_providers %}
+                        {% for provider in socialaccount_providers %}
+                            {% if provider.id == "google" %}
+                                <a href="{% provider_login_url provider.id process='login' %}"
+                                   class="button is-fullwidth is-primary">
+                                    <span>Sign in with Google</span>
+                                </a>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}

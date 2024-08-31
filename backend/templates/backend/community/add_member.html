@@ -3,14 +3,23 @@
 {% load widget_tweaks %}
 
 {% block content %}
-    <section>
-        <div class="container">
-            <h1 class="title is-3">Add Member</h1>
+    <div>
+        <section class="section">
+            <h1 class="title is-3">Add Member to {{ community.name }}</h1>
 
-            <form method="post" class="form">{% csrf_token %}
+            <a href="{% url 'send_invite' community.id %}" class="button is-primary mt-4">
+                Send an Invite Link?
+            </a>
+        </section>
+
+        <div class="section">
+            <h1 class="title is-4">Invite with username?</h1>
+
+            <form method="post" class="form">
+                {% csrf_token %}
                 {{ form|crispy }}
                 <button type="submit" class="button is-primary">Add</button>
             </form>
         </div>
-    </section>
+    </div>
 {% endblock %}

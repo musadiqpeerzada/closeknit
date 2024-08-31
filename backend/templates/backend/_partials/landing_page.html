@@ -1,3 +1,4 @@
+{% load account socialaccount %}
 <style>
 
     .title {
@@ -40,7 +41,9 @@
                     Join tribepool and start sharing resources within your community
                 </h2>
                 <div class="has-text-centered mt-5">
-                    <a class="button is-primary is-medium" href="{% url 'signup' %}">Get Started</a>
+                    <a class="button is-primary is-medium" href="{% provider_login_url 'google' process='login' %}">
+                        Get Started
+                    </a>
                 </div>
             </div>
         </div>

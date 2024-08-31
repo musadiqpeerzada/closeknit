@@ -1,0 +1,40 @@
+{% extends "backend/base.html" %}
+
+{% block content %}
+    <section class="section">
+        <div class="container">
+            <h1 class="title">Invite Link for {{ community.name }}</h1>
+            <div class="field">
+                <label class="label">Invite Link</label>
+                <div class="control has-icons-right">
+                    <input class="input" type="text" id="invite-link" value="{{ invite_url }}" readonly>
+                    <span class="icon is-small is-right">
+                    <i class="fas fa-link"></i>
+                </span>
+                </div>
+            </div>
+            <div class="field">
+                <div class="control">
+                    <button class="button is-primary" onclick="copyInviteLink()">
+                    <span class="icon">
+                        <i class="fas fa-copy"></i>
+                    </span>
+                        <span>Copy Link</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        function copyInviteLink() {
+            const copyText = document.getElementById("invite-link");
+            copyText.select();
+            copyText.setSelectionRange(0, 99999); // For mobile devices
+            document.execCommand("copy");
+
+            // Optional: Provide feedback to the user
+            alert("Invite link copied to clipboard!");
+        }
+    </script>
+{% endblock %}

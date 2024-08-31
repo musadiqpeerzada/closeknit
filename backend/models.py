@@ -1,3 +1,5 @@
+import uuid
+
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils import timezone
@@ -76,3 +78,39 @@ class Lease(models.Model):
 
     def __str__(self):
         return f"Lease of {self.item.name} by {self.lessee.username} from {self.start_date} to {self.end_date}"
+
+
+class Invite(models.Model):
+    community = models.ForeignKey(Community, on_delete=models.CASCADE)
+    token = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    is_used = models.BooleanField(default=False)
+    created_by = models.ForeignKey(
+        "auth.User",
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name="created_invites",
+    )
+    used_by = models.ForeignKey(
+        "auth.User",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="used_invites",
+    )
+    used_at = models.DateTimeField(null=True, blank=True)
+
+    def __str__(self):
+        return f"Invite from {self.created_by.username} to {self.community.name}"
+
+    def is_expired(self):
+        return (timezone.now() - self.created_at).days >= 1
+
+    def use_invite(self, user):
+        if not self.is_used and not self.is_expired():
+            self.is_used = True
+            self.used_by = user
+            self.used_at = timezone.now()
+            self.save()
+            return True
+        return False
