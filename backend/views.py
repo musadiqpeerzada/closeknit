@@ -110,33 +110,6 @@ def index_view(request):
     return render(request, "backend/index.html", dashboard_data)
 
 
-class IndexView(generic.TemplateView):
-    template_name = "backend/index.html"
-
-    def get_context_data(self):
-        users_in_communities = get_all_users_from_communities_the_user_belongs_to(
-            self.request.user
-        )
-        your_items_count = Item.objects.filter(owner=self.request.user).count()
-        your_subscriptions_count = Subscription.objects.filter(
-            owner=self.request.user
-        ).count()
-        items_available_for_lease = get_items_available_for_lease(
-            self.request.user
-        ).count()
-        subscriptions_available_for_share = get_subscriptions_available_for_share(
-            user=self.request.user
-        ).count()
-        total_active_members_across_communities = len(users_in_communities)
-        return dict(
-            your_items_count=your_items_count,
-            your_subscriptions_count=your_subscriptions_count,
-            items_available_for_lease=items_available_for_lease,
-            subscriptions_available_for_share=subscriptions_available_for_share,
-            total_active_members_across_communities=total_active_members_across_communities,
-        )
-
-
 class SubscriptionListView(generic.ListView):
     template_name = "backend/subscription/list.html"
     context_object_name = "subscriptions"
