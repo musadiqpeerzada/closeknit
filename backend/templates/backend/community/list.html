@@ -19,7 +19,7 @@
                             <!-- Card Header: First Row -->
                             <header class="card-header">
                                 <p class="card-header-title">
-                                    <strong>{{ community.name }}</strong>
+                                    <strong>{{ community.name|title }}</strong>
                                 </p>
                                 <div class="card-header-icon">
                                     <a href="{% url 'community_add_member' community.id %}"
