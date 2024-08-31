@@ -1,3 +1,4 @@
+{% load account socialaccount %}
 <!doctype html>
 <html lang="en" data-theme="light">
 <head>
@@ -71,11 +72,8 @@
                                 Log out
                             </a>
                         {% else %}
-                            <a class="button is-primary" href="{% url 'signup' %}">
-                                <strong>Sign up</strong>
-                            </a>
-                            <a class="button is-light" href="{% url 'login' %}">
-                                Log in
+                            <a class="button is-primary" href="{% provider_login_url 'google' process='login' %}">
+                                Signup / Log in
                             </a>
                         {% endif %}
                     </div>
