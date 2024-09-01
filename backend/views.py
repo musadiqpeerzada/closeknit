@@ -45,6 +45,10 @@ def index_view(request):
     return render(request, "backend/index.html", dashboard_data)
 
 
+def about_view(request):
+    return render(request, "backend/about.html")
+
+
 class SubscriptionListView(generic.ListView):
     template_name = "backend/subscription/list.html"
     context_object_name = "subscriptions"
