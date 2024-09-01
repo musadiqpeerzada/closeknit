@@ -3,8 +3,11 @@
         <div class="column is-one-third pl-0">
             <div class="card">
                 <div class="card-content">
-                    <p class="title is-4">{{ item.name | title }}</p>
+                    <p class="title is-4 mb-1">{{ item.name | title }}</p>
                     <p>From <em>{{ item.owner | title }}</em></p>
+                    <span class="tag is-info">
+                        {{ item.get_item_type_display }}
+                    </span>
                     {% if item.owner == user %}
                         <div class="column is-narrow has-text-right">
                             <a href="{% url 'item_update' item.pk %}" class="button is-info is-small">

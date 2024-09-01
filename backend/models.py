@@ -38,10 +38,24 @@ class Community(models.Model):
 
 
 class Item(models.Model):
+    BOOK = "book"
+    ELECTRONICS = "electronics"
+    OTHER = "other"
+    ITEM_TYPE_CHOICES = [
+        (BOOK, "Book"),
+        (ELECTRONICS, "Electronics"),
+        (OTHER, "Other"),
+    ]
+
     name = models.CharField(max_length=100)
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     owner = models.ForeignKey("auth.User", on_delete=models.CASCADE)
+    item_type = models.CharField(
+        max_length=20,
+        choices=ITEM_TYPE_CHOICES,
+        default=OTHER,
+    )
 
     def __str__(self):
         return f"{self.name} (owned by {self.owner.username})"
