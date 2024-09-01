@@ -2,7 +2,9 @@ import uuid
 
 from django.core.exceptions import ValidationError
 from django.db import models
+from django.db.models.signals import pre_save
 from django.utils import timezone
+from django.dispatch import receiver
 
 
 class Subscription(models.Model):
@@ -78,6 +80,11 @@ class Lease(models.Model):
 
     def __str__(self):
         return f"Lease of {self.item.name} by {self.lessee.username} from {self.start_date} to {self.end_date}"
+
+
+@receiver(pre_save, sender=Lease)
+def pre_save_lease(sender, instance, **kwargs):
+    instance.clean()
 
 
 class Invite(models.Model):
