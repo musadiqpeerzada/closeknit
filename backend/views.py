@@ -228,7 +228,7 @@ class ItemsListView(generic.ListView):
 class ItemCreateView(generic.CreateView):
     template_name = "backend/item/cud.html"
     model = Item
-    fields = ["name"]
+    fields = ["name", "item_type"]
     success_url = reverse_lazy("item_list")
 
     def form_valid(self, form):
@@ -239,7 +239,7 @@ class ItemCreateView(generic.CreateView):
 class ItemUpdateView(generic.UpdateView):
     template_name = "backend/item/cud.html"
     model = Item
-    fields = ["name", "is_active"]
+    fields = ["name", "is_active", "item_type"]
     success_url = reverse_lazy("item_list")
 
     def get_queryset(self):
