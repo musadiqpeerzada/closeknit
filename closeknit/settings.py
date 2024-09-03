@@ -38,8 +38,8 @@ SECRET_KEY = os.environ.get("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["closeknit.xyz", "www.closeknit.xyz", "localhost", "127.0.0.1"]
-CSRF_TRUSTED_ORIGINS = ["https://closeknit.xyz", "https://www.closeknit.xyz"]
+ALLOWED_HOSTS = ["closeknit.io", "www.closeknit.io", "localhost", "127.0.0.1"]
+CSRF_TRUSTED_ORIGINS = ["https://closeknit.io", "https://www.closeknit.io"]
 
 # Application definition
 
