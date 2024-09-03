@@ -4,7 +4,7 @@ FROM python:3.12-slim
 # Set environment variables
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
-ENV DJANGO_SETTINGS_MODULE=tribepool.settings
+ENV DJANGO_SETTINGS_MODULE=closeknit.settings
 ENV DATABASE_URL=${DATABASE_URL}
 ENV SECRET_KEY=${SECRET_KEY}
 
@@ -22,4 +22,4 @@ COPY . /app/
 RUN python manage.py collectstatic --noinput
 
 # Run gunicorn
-CMD ["gunicorn", "--bind", "0.0.0.0:8000", "tribepool.wsgi:application"]
+CMD ["gunicorn", "--bind", "0.0.0.0:8000", "closeknit.wsgi:application"]
