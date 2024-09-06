@@ -1,75 +1,53 @@
 {% extends 'backend/base.html' %}
-
 {% block content %}
-    <section class="section">
-        <div class="mb-5">
 
-            <div class="level is-mobile">
-                <div class="level-left">
-                    <div class="level-item">
-                        <h2 class="title is-3">Communities</h2>
-                    </div>
-                </div>
-                <div class="level-right">
-                    <div class="level-item">
-                        <a href="{% url 'community_add' %}" class="button is-primary">
-                            <span>+ Create</span>
-                        </a>
-                    </div>
-                </div>
-            </div>
+    <section class="section">
+        <div class="is-flex is-justify-content-space-between is-align-items-center mb-5">
+            <h1 class="title is-3">Communities</h1>
+            <a href="{% url 'community_add' %}" class="button is-primary">+ Create</a>
         </div>
 
-        <section>
-            {% if communities.owned %}
-                <h3 class="title is-4">You Created</h3>
-                <div>
-                    {% for community in communities.owned %}
-                        <!-- Card Begin -->
-                        <div class="card mb-4">
-                            <!-- Card Header: First Row -->
+        {% if communities.owned %}
+            <h2 class="title is-4 mb-4">You Created</h2>
+            <div class="columns is-multiline">
+                {% for community in communities.owned %}
+                    <div class="column is-half-tablet is-one-quarter-desktop">
+                        <div class="card">
                             <header class="card-header">
-                                <p class="card-header-title">
-                                    <strong>{{ community.name|title }}</strong>
-                                </p>
-                                <div class="card-header-icon">
-                                    <a href="{% url 'community_add_member' community.id %}"
-                                       class="button is-link is-small mr-2">+</a>
-                                    <a href="{% url 'community_update' community.id %}"
-                                       class="button is-info is-small mr-2">Update</a>
-                                    <a href="{% url 'community_delete' community.id %}"
-                                       class="button is-danger is-small">Delete</a>
-                                </div>
+                                <p class="card-header-title">{{ community.name|title }}</p>
                             </header>
+                            <footer class="card-footer">
+                                <a href="{% url 'community_add_member' community.id %}"
+                                   class="card-footer-item">Add</a>
+                                <a href="{% url 'community_update' community.id %}"
+                                   class="card-footer-item">Update</a>
+                                <a href="{% url 'community_delete' community.id %}"
+                                   class="card-footer-item has-text-danger">Delete</a>
+                            </footer>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
 
-                            <!-- Card Content: Second Row -->
+        {% if communities.shared %}
+            <h2 class="title is-4 mt-6 mb-4">You Are a Member Of</h2>
+            <div class="columns is-multiline">
+                {% for community in communities.shared %}
+                    <a class="column is-half-tablet is-one-quarter-desktop"
+                       href="{% url 'community_detail' community.pk %}">
+                        <div class="card">
+                            <header class="card-header">
+                                <p class="card-header-title">{{ community.name|title }}</p>
+                            </header>
                             <div class="card-content">
-                                {% if community.members %}
-                                    <ul>
-                                        {% for member in community.members.all %}
-                                            <li>{{ member.username }}</li>
-                                        {% endfor %}
-                                    </ul>
-                                {% else %}
-                                    <p>No members.</p>
-                                {% endif %}
+                                <p class="subtitle is-6">Run by {{ community.owner.username }}</p>
                             </div>
                         </div>
-                        <!-- Card End -->
-                    {% endfor %}
-                </div>
-            {% endif %}
-
-            {% if communities.shared %}
-                <h3 class="title is-4 mt-5">You Are a Member Of</h3>
-                <ul class="list is-hoverable">
-                    {% for community in communities.shared %}
-                        <li class="box">
-                            <strong>{{ community.name }}</strong> (run by <em>{{ community.owner.username }}</em>)
-                        </li>
-                    {% endfor %}
-                </ul>
-            {% endif %}
-        </section>
+                    </a>
+                {% endfor %}
+            </div>
+        {% endif %}
     </section>
+
 {% endblock %}
