@@ -33,7 +33,7 @@
 
             {% if items.owned %}
                 <section class="pt-4">
-                    <h2 class="title is-4">Owned</h2>
+                    <h2 class="title is-4">Yours</h2>
                     {% include 'backend/_partials/item_listing.html' with items=items.owned user=user %}
                 </section>
             {% endif %}
@@ -46,7 +46,7 @@
             {% endif %}
 
             {% if items.leased_out %}
-                <section class="mt-5">
+                <section class="pt-4">
                     <h2 class="title is-4">Lent</h2>
                     {% include 'backend/_partials/lease_listing.html' with items=items.leased_out user=user %}
                 </section>
