@@ -64,7 +64,7 @@ def get_dashboard_data(user: User) -> dict:
         "items_available_for_lease": items_available_for_lease,
         "subscriptions_available_for_share": subscriptions_available_for_share,
         "total_available_items": items_available_for_lease
-        + subscriptions_available_for_share,
+                                 + subscriptions_available_for_share,
         "total_communities_user_belongs_to": total_communities_user_belongs_to,
         "total_active_members_across_communities": total_active_members_across_communities,
     }
@@ -127,9 +127,35 @@ def get_data_for_profile_view(user: User):
         user_name=user_name,
         user_profile_picture=user_profile_picture,
         user_email=user_email,
-        communities_the_user_is_part_of=[
-            c.name for c in communities_the_user_is_part_of
-        ],
+        communities_the_user_is_part_of=communities_the_user_is_part_of,
         items_of_user_count=items_of_user.count(),
         subscriptions_of_user_count=subscriptions_of_user.count(),
     )
+
+
+def get_data_for_community_detail(community_id: int) -> dict | None:
+    try:
+        community = Community.objects.get(id=community_id)
+    except Community.DoesNotExist:
+        return None
+
+    members = community.members.all()
+
+    shared_items_count = Item.objects.filter(owner__in=members, is_active=True).count()
+    shared_subscriptions_count = Subscription.objects.filter(owner__in=members).count()
+
+    return {
+        "community_name": community.name,
+        "created_by": community.owner.username,
+        "member_count": members.count(),
+        "shared_items_count": shared_items_count,
+        "shared_subscriptions_count": shared_subscriptions_count,
+        "members": [
+            {
+                "username": member.username,
+                "email": member.email,
+                "profile_picture": member.socialaccount_set.first().get_avatar_url() if member.socialaccount_set.exists() else None,
+            }
+            for member in members
+        ],
+    }

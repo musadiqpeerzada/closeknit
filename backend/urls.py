@@ -1,4 +1,3 @@
-from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
 from django.urls import path
 
@@ -12,6 +11,11 @@ urlpatterns = [
     path("logout", views.LogoutView.as_view(), name="custom_logout"),
     path("profile", views.profile_view, name="profile"),
     # communities
+    path(
+        "communities/<int:pk>",
+        views.community_detail_view,
+        name="community_detail",
+    ),
     path(
         "communities/list",
         login_required(views.CommunityListView.as_view()),

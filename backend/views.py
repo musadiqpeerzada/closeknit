@@ -20,7 +20,7 @@ from backend.services import (
     add_user_to_community,
     create_invite,
     use_invite,
-    get_data_for_profile_view,
+    get_data_for_profile_view, get_data_for_community_detail,
 )
 
 
@@ -158,6 +158,17 @@ class CommunityListView(generic.ListView):
 
     def get_queryset(self):
         return get_user_communities(self.request.user)
+
+
+@login_required
+def community_detail_view(request, pk):
+    does_user_belong_to_community = Community.objects.filter(
+        pk=pk, members=request.user
+    ).exists()
+    if not does_user_belong_to_community:
+        return HttpResponseBadRequest("You do not belong to this community")
+
+    return render(request, "backend/community/detail.html", get_data_for_community_detail(pk))
 
 
 class CommunityUpdateForm(forms.ModelForm):

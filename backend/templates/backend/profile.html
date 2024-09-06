@@ -19,7 +19,9 @@
                         <h2 class="title is-4">Communities</h2>
                         <div class="tags">
                             {% for community in communities_the_user_is_part_of %}
-                                <span class="tag subtitle">{{ community }}</span>
+                                <a href="{% url 'community_detail' community.pk %}">
+                                <span class="tag subtitle">{{ community.name }}</span>
+                                </a>
                             {% endfor %}
                         </div>
                     </div>

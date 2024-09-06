@@ -65,7 +65,9 @@
             </div>
 
             <div class="navbar-end">
-                <a class="navbar-item" href="{% url 'profile' %}">My account</a>
+                {% if user.is_authenticated %}
+                    <a class="navbar-item" href="{% url 'profile' %}">My account</a>
+                {% endif %}
                 <a class="navbar-item" href="{% url 'about' %}">About</a>
                 <div class="navbar-item">
                     <div class="buttons">
