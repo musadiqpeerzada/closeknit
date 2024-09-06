@@ -10,6 +10,7 @@ urlpatterns = [
     # auth
     path("signup", views.SignUpView.as_view(), name="signup"),
     path("logout", views.LogoutView.as_view(), name="custom_logout"),
+    path("profile", views.profile_view, name="profile"),
     # communities
     path(
         "communities/list",
