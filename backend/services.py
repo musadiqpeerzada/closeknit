@@ -16,7 +16,9 @@ def get_user(user_name: str) -> User | None:
 def get_all_users_from_communities_the_user_belongs_to(user: User) -> list[User]:
     communities_the_user_belongs_to = Community.objects.filter(members=user)
     return list(
-        User.objects.filter(communities__in=communities_the_user_belongs_to).distinct()
+        User.objects.filter(community_members__in=communities_the_user_belongs_to)
+        .exclude(id=user.id)
+        .distinct()
     )
 
 
@@ -37,9 +39,7 @@ def get_items_available_for_lease(user: User) -> QuerySet[Item]:
 
 
 def get_subscriptions_available_for_share(user: User) -> QuerySet[Subscription]:
-    all_users_of_communities_the_user_belongs_to = (
-        get_all_users_from_communities_the_user_belongs_to(user)
-    )
+    all_users_of_communities_the_user_belongs_to = get_all_users_from_communities_the_user_belongs_to(user)
     all_subscriptions = Subscription.objects.filter(
         owner__in=all_users_of_communities_the_user_belongs_to
     )
@@ -74,13 +74,7 @@ def get_user_subscriptions(user: User) -> dict:
     return {
         "owned": Subscription.objects.filter(owner=user),
         "shared": Subscription.objects.filter(shared_to=user),
-    }
-
-
-def get_discover_data(user: User) -> dict:
-    return {
-        "subscriptions": get_subscriptions_available_for_share(user),
-        "items": get_items_available_for_lease(user),
+        "discover": get_subscriptions_available_for_share(user),
     }
 
 
@@ -96,6 +90,7 @@ def get_user_items(user: User) -> dict:
         "owned": Item.objects.filter(owner=user),
         "leased": Lease.objects.filter(lessee=user),
         "leased_out": Lease.objects.filter(item__owner=user),
+        "discover": get_items_available_for_lease(user),
     }
 
 

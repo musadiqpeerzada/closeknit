@@ -27,19 +27,19 @@ urlpatterns = [
         name="community_add",
     ),
     path(
-        "communities/update/<int:pk>",
+        "communities/<int:pk>/update",
         login_required(
             views.CommunityUpdateView.as_view(extra_context={"view": "update"})
         ),
         name="community_update",
     ),
     path(
-        "communities/join/<int:pk>",
+        "communities/<int:pk>/join",
         login_required(views.CommunityAddMemberView.as_view()),
         name="community_add_member",
     ),
     path(
-        "communities/delete/<int:pk>",
+        "communities/<int:pk>/delete",
         login_required(
             views.CommunityDeleteView.as_view(extra_context={"view": "delete"})
         ),
@@ -52,11 +52,6 @@ urlpatterns = [
         name="subscription_list",
     ),
     path(
-        "subscriptions/discover",
-        login_required(views.DiscoverListView.as_view()),
-        name="subscription_discover",
-    ),
-    path(
         "subscriptions/add",
         login_required(
             views.SubscriptionAddView.as_view(extra_context={"view": "add"})
@@ -64,14 +59,14 @@ urlpatterns = [
         name="subscription_add",
     ),
     path(
-        "subscriptions/update/<int:pk>",
+        "subscriptions/<int:pk>/update",
         login_required(
             views.SubscriptionUpdateView.as_view(extra_context={"view": "update"})
         ),
         name="subscription_update",
     ),
     path(
-        "subscriptions/delete/<int:pk>",
+        "subscriptions/<int:pk>/delete",
         login_required(
             views.SubscriptionDeleteView.as_view(extra_context={"view": "delete"})
         ),
@@ -94,7 +89,7 @@ urlpatterns = [
         name="item_update",
     ),
     path(
-        "items/delete/<int:pk>",
+        "items/<int:pk>/delete",
         login_required(views.ItemDeleteView.as_view(extra_context={"view": "delete"})),
         name="item_delete",
     ),
@@ -105,12 +100,12 @@ urlpatterns = [
         name="lease_add",
     ),
     path(
-        "leases/update/<int:pk>",
+        "leases/<int:pk>/update",
         login_required(views.LeaseUpdateView.as_view(extra_context={"view": "update"})),
         name="lease_update",
     ),
     path(
-        "leases/delete/<int:pk>",
+        "leases/<int:pk>/delete",
         login_required(views.LeaseDeleteView.as_view(extra_context={"view": "delete"})),
         name="lease_delete",
     ),

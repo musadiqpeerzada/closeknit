@@ -3,12 +3,26 @@
 {% block content %}
     <div>
         <section class="section">
-            <h1 class="title is-3">Subscriptions</h1>
-            <div class="mb-4">
-                <a href="{% url 'subscription_add' %}" class="button is-primary">
-                    <span>+ Add</span>
-                </a>
+
+            <div class="level is-mobile">
+                <div class="level-left">
+                    <div class="level-item">
+                        <h2 class="title is-3">Subscriptions</h2>
+                    </div>
+                </div>
+                <div class="level-right">
+                    <div class="level-item">
+                        <a href="{% url 'subscription_add' %}" class="button is-primary"><span>+</span></a>
+                    </div>
+                </div>
             </div>
+
+            {% if subscriptions.discover %}
+                <section class="pt-4">
+                    <h2 class="title is-4">From your community</h2>
+                    {% include 'backend/_partials/subscription_listing.html' with subscriptions=subscriptions.discover %}
+                </section>
+            {% endif %}
 
             {% if subscriptions.owned %}
                 <section class="pt-4">

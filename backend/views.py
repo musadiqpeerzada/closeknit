@@ -14,7 +14,6 @@ from backend.services import (
     get_all_users_from_communities_the_user_belongs_to,
     get_dashboard_data,
     get_user_subscriptions,
-    get_discover_data,
     get_user_communities,
     get_user_items,
     add_user_to_community,
@@ -57,20 +56,18 @@ def profile_view(request):
     )
 
 
+def get_subscription_list_view(request):
+    return render(
+        request, "backend/subscription/list.html", context=get_user_subscriptions(request.user)
+    )
+
+
 class SubscriptionListView(generic.ListView):
     template_name = "backend/subscription/list.html"
     context_object_name = "subscriptions"
 
     def get_queryset(self):
         return get_user_subscriptions(self.request.user)
-
-
-class DiscoverListView(generic.ListView):
-    template_name = "backend/discover.html"
-    context_object_name = "discover"
-
-    def get_queryset(self):
-        return get_discover_data(self.request.user)
 
 
 class SubscriptionAddForm(forms.ModelForm):

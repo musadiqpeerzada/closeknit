@@ -60,13 +60,12 @@
                     <a class="navbar-item" href="{% url 'subscription_list' %}">Subscriptions</a>
                     <a class="navbar-item" href="{% url 'item_list' %}">Items</a>
                     <a class="navbar-item" href="{% url 'community_list' %}">Communities</a>
-                    <a class="navbar-item" href="{% url 'subscription_discover' %}">Discover</a>
                 {% endif %}
             </div>
 
             <div class="navbar-end">
                 {% if user.is_authenticated %}
-                    <a class="navbar-item" href="{% url 'profile' %}">My account</a>
+                    <a class="navbar-item" href="{% url 'profile' %}">My Account</a>
                 {% endif %}
                 <a class="navbar-item" href="{% url 'about' %}">About</a>
                 <div class="navbar-item">
