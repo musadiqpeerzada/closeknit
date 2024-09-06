@@ -1,3 +1,4 @@
+from allauth.socialaccount.models import SocialAccount
 from django.contrib.auth.models import User
 from django.db.models import QuerySet
 from datetime import datetime
@@ -113,3 +114,22 @@ def use_invite(invite: Invite, user: User) -> bool:
         invite.community.members.add(user)
         return True
     return False
+
+
+def get_data_for_profile_view(user: User):
+    user_name = user.username
+    user_profile_picture = SocialAccount.objects.get(user=user).get_avatar_url()
+    user_email = user.email
+    communities_the_user_is_part_of = Community.objects.filter(members=user)
+    items_of_user = Item.objects.filter(owner=user)
+    subscriptions_of_user = Subscription.objects.filter(owner=user)
+    return dict(
+        user_name=user_name,
+        user_profile_picture=user_profile_picture,
+        user_email=user_email,
+        communities_the_user_is_part_of=[
+            c.name for c in communities_the_user_is_part_of
+        ],
+        items_of_user_count=items_of_user.count(),
+        subscriptions_of_user_count=subscriptions_of_user.count(),
+    )

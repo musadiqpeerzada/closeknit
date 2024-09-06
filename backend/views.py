@@ -20,6 +20,7 @@ from backend.services import (
     add_user_to_community,
     create_invite,
     use_invite,
+    get_data_for_profile_view,
 )
 
 
@@ -47,6 +48,13 @@ def index_view(request):
 
 def about_view(request):
     return render(request, "backend/about.html")
+
+
+@login_required
+def profile_view(request):
+    return render(
+        request, "backend/profile.html", context=get_data_for_profile_view(request.user)
+    )
 
 
 class SubscriptionListView(generic.ListView):
