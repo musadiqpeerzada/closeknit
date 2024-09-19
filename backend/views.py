@@ -184,13 +184,15 @@ class CommunityAddView(generic.CreateView):
     template_name = "backend/community/cud.html"
     model = Community
     fields = ["name"]
-    success_url = reverse_lazy("community_list")
 
     def form_valid(self, form):
         form.instance.owner = self.request.user
         community = form.save()
         community.members.add(self.request.user)
         return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse("community_detail", kwargs={"pk": self.object.pk})
 
 
 class CommunityDeleteView(generic.DeleteView):
@@ -312,8 +314,9 @@ class LeaseDeleteView(generic.DeleteView):
 def accept_invite(request, token):
     if request.user.is_authenticated:
         if request.method == "POST":
-            if use_invite(invite_uuid=token, user=request.user):
-                return redirect("community_list")
+            is_invite_used, community = use_invite(invite_uuid=token, user=request.user)
+            if is_invite_used:
+                return redirect("community_detail", community.pk)
             else:
                 return HttpResponseBadRequest("Unable to use this invite.")
 

@@ -85,12 +85,12 @@ def add_user_to_community(community: Community, user: User) -> None:
         community.save()
 
 
-def use_invite(invite_uuid: str, user: User) -> bool:
+def use_invite(invite_uuid: str, user: User) -> (bool, Community | None):
     community: Community = Community.objects.filter(invite_uuid=invite_uuid).first()
     if not community:
-        return False
+        return False, None
     community.members.add(user)
-    return True
+    return True, community
 
 
 def get_data_for_profile_view(user: User):

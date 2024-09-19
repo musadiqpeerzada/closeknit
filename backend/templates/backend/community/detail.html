@@ -17,19 +17,36 @@
                 </div>
             {% endif %}
 
+            {% if shared_items_count < 3 %}
+                <a href="{% url 'item_add' %}">
+                    <article class="message is-info">
+                        <div class="message-header">
+                            <p class="title is-4">Share at least three items to start inviting people!</p>
+                        </div>
+                        <div class="message-body">
+                            Closeknit is all about sharing.
+                            We don't want your friends/family to join an empty community!
+                        </div>
+                    </article>
+                </a>
+            {% else %}
 
-            <section class="py-4">
-                <div class="field has-addons">
-                    <div class="control is-expanded">
-                        <input class="input" type="text" id="invite-link" value="{{ invite_link }}" readonly>
+                <section class="py-4">
+                    <div class="field has-addons">
+                        <div class="control is-expanded">
+                            <input class="input" type="text" id="invite-link" value="{{ invite_link }}" readonly>
+                        </div>
+                        <div class="control">
+                            <button class="button is-primary" onclick="copyInviteLink()">
+                                <span>Copy Invite Link</span>
+                            </button>
+                        </div>
                     </div>
-                    <div class="control">
-                        <button class="button is-primary" onclick="copyInviteLink()">
-                            <span>Copy Invite Link</span>
-                        </button>
-                    </div>
-                </div>
-            </section>
+                </section>
+            {% endif %}
+
+
+
 
             <div class="columns is-centered has-text-centered">
                 <div class="column">
