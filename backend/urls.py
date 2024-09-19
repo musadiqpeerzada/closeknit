@@ -60,6 +60,11 @@ urlpatterns = [
         name="subscription_add",
     ),
     path(
+        "subscriptions/<int:pk>",
+        views.subscription_detail_view,
+        name="subscription_detail",
+    ),
+    path(
         "subscriptions/<int:pk>/update",
         login_required(
             views.SubscriptionUpdateView.as_view(extra_context={"view": "update"})
@@ -85,7 +90,7 @@ urlpatterns = [
         name="item_add",
     ),
     path(
-        "items/update/<int:pk>",
+        "items/<int:pk>/update",
         login_required(views.ItemUpdateView.as_view(extra_context={"view": "update"})),
         name="item_update",
     ),

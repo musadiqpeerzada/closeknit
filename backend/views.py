@@ -76,6 +76,13 @@ class SubscriptionListView(generic.ListView):
         return get_user_subscriptions(self.request.user)
 
 
+def subscription_detail_view(request, pk):
+    subscription = get_object_or_404(Subscription, pk=pk)
+    return render(
+        request, "backend/subscription/detail.html", {"subscription": subscription}
+    )
+
+
 class SubscriptionBaseView(generic.View):
     def get_form(self, *args, **kwargs):
         form = super().get_form(*args, **kwargs)

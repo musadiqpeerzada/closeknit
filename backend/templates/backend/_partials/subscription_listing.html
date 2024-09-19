@@ -1,24 +1,26 @@
 <div class="columns is-multiline">
     {% for subscription in subscriptions %}
         <div class="column is-one-third pl-0">
-            <div class="card">
-                <div class="card-content">
-                    <p class="title is-4">{{ subscription.name | title }}</p>
-                    <p>From <em>{{ subscription.owner | title }}</em></p>
-                    {% if subscription.owner == user %}
-                        <div class="column is-narrow has-text-right">
-                            <a href="{% url 'subscription_update' subscription.pk %}"
-                               class="button is-small">
-                                Update
-                            </a>
-                            <a href="{% url 'subscription_delete' subscription.pk %}"
-                               class="button is-danger is-small">
-                                Delete
-                            </a>
-                        </div>
-                    {% endif %}
+            <a href="{% url 'subscription_detail' subscription.pk %}">
+                <div class="card">
+                    <div class="card-content">
+                        <p class="title is-4">{{ subscription.name | title }}</p>
+                        <p>From <em>{{ subscription.owner | title }}</em></p>
+                        {% if subscription.owner == user %}
+                            <div class="column is-narrow has-text-right">
+                                <a href="{% url 'subscription_update' subscription.pk %}"
+                                   class="button is-small">
+                                    Update
+                                </a>
+                                <a href="{% url 'subscription_delete' subscription.pk %}"
+                                   class="button is-danger is-small">
+                                    Delete
+                                </a>
+                            </div>
+                        {% endif %}
+                    </div>
                 </div>
-            </div>
+            </a>
         </div>
     {% endfor %}
 </div>
