@@ -1,6 +1,5 @@
 from django import forms
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.http import HttpResponseBadRequest
 from django.shortcuts import render, get_object_or_404, redirect
@@ -8,6 +7,15 @@ from django.urls import reverse_lazy, reverse
 from django.views import generic
 from django.views.generic import CreateView
 
+from backend.forms import (
+    RegistrationForm,
+    SubscriptionAddForm,
+    SubscriptionUpdateForm,
+    CommunityUpdateForm,
+    UpdateCommunityMembersForm,
+    ItemCreateForm,
+    ItemUpdateForm,
+)
 from backend.models import Subscription, Community, Item, Lease
 from backend.services import (
     get_user,
@@ -21,10 +29,6 @@ from backend.services import (
     get_data_for_profile_view,
     get_data_for_community_detail,
 )
-
-
-class RegistrationForm(UserCreationForm):
-    usable_password = None
 
 
 class SignUpView(CreateView):
@@ -90,23 +94,6 @@ class SubscriptionBaseView(generic.View):
         return form
 
 
-class SubscriptionAddForm(forms.ModelForm):
-    shared_to = forms.ModelMultipleChoiceField(
-        queryset=User.objects.none(),
-        required=False,
-        widget=forms.CheckboxSelectMultiple,
-    )
-    shared_with = forms.ModelMultipleChoiceField(
-        queryset=Community.objects.none(),
-        required=False,
-        widget=forms.CheckboxSelectMultiple,
-    )
-
-    class Meta:
-        model = Subscription
-        fields = ["name", "is_active", "shared_to", "shared_with"]
-
-
 class SubscriptionAddView(SubscriptionBaseView, generic.CreateView):
     template_name = "backend/subscription/cud.html"
     model = Subscription
@@ -116,23 +103,6 @@ class SubscriptionAddView(SubscriptionBaseView, generic.CreateView):
     def form_valid(self, form):
         form.instance.owner = self.request.user
         return super().form_valid(form)
-
-
-class SubscriptionUpdateForm(forms.ModelForm):
-    shared_to = forms.ModelMultipleChoiceField(
-        queryset=User.objects.none(),
-        required=False,
-        widget=forms.CheckboxSelectMultiple,
-    )
-    shared_with = forms.ModelMultipleChoiceField(
-        queryset=Community.objects.none(),
-        required=False,
-        widget=forms.CheckboxSelectMultiple,
-    )
-
-    class Meta:
-        model = Subscription
-        fields = ["name", "is_active", "shared_to", "shared_with"]
 
 
 class SubscriptionUpdateView(SubscriptionBaseView, generic.UpdateView):
@@ -177,12 +147,6 @@ def community_detail_view(request, pk):
     )
 
 
-class CommunityUpdateForm(forms.ModelForm):
-    class Meta:
-        model = Community
-        fields = ["name", "is_active", "members"]
-
-
 class CommunityUpdateView(generic.UpdateView):
     template_name = "backend/community/cud.html"
     model = Community
@@ -191,10 +155,6 @@ class CommunityUpdateView(generic.UpdateView):
 
     def get_queryset(self):
         return Community.objects.filter(owner=self.request.user)
-
-
-class UpdateCommunityMembersForm(forms.Form):
-    user_name = forms.CharField(label="username", max_length=100)
 
 
 class CommunityAddMemberView(generic.FormView):
@@ -259,18 +219,6 @@ class ItemBaseView(generic.View):
         return form
 
 
-class ItemCreateForm(forms.ModelForm):
-    shared_with = forms.ModelMultipleChoiceField(
-        queryset=Community.objects.none(),
-        required=False,
-        widget=forms.CheckboxSelectMultiple,
-    )
-
-    class Meta:
-        model = Item
-        fields = ["name", "item_type", "shared_with"]
-
-
 class ItemCreateView(ItemBaseView, generic.CreateView):
     template_name = "backend/item/cud.html"
     model = Item
@@ -280,18 +228,6 @@ class ItemCreateView(ItemBaseView, generic.CreateView):
     def form_valid(self, form):
         form.instance.owner = self.request.user
         return super().form_valid(form)
-
-
-class ItemUpdateForm(forms.ModelForm):
-    shared_with = forms.ModelMultipleChoiceField(
-        queryset=Community.objects.none(),
-        required=False,
-        widget=forms.CheckboxSelectMultiple,
-    )
-
-    class Meta:
-        model = Item
-        fields = ["name", "is_active", "item_type", "shared_with"]
 
 
 class ItemUpdateView(ItemBaseView, generic.UpdateView):
