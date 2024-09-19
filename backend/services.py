@@ -129,6 +129,8 @@ def get_data_for_community_detail(community_id: int, request) -> dict | None:
     invite_link = __get_invite_link(request, community.invite_uuid)
 
     return {
+        "pk": community.pk,
+        "community_owner": community.owner,
         "community_name": community.name,
         "invite_link": invite_link,
         "created_by": community.owner.username,

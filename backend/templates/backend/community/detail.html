@@ -6,6 +6,18 @@
             <h1 class="title is-2 has-text-centered">{{ community_name|title }}</h1>
             <p class="subtitle has-text-centered">Created by {{ created_by|title }}</p>
 
+            {% if community_owner == user %}
+                <div class="buttons is-centered">
+                    <a href="{% url 'community_update' pk %}" class="button is-primary">
+                        <span>Edit</span>
+                    </a>
+                    <a href="{% url 'community_delete' pk %}" class="button is-danger">
+                        <span>Delete</span>
+                    </a>
+                </div>
+            {% endif %}
+
+
             <section class="py-4">
                 <div class="field has-addons">
                     <div class="control is-expanded">
