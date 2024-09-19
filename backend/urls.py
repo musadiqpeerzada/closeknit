@@ -2,6 +2,7 @@ from django.contrib.auth.decorators import login_required
 from django.urls import path
 
 from . import views
+from .views import item_detail
 
 urlpatterns = [
     path("", views.index_view, name="index"),
@@ -87,6 +88,11 @@ urlpatterns = [
         "items/update/<int:pk>",
         login_required(views.ItemUpdateView.as_view(extra_context={"view": "update"})),
         name="item_update",
+    ),
+    path(
+        "items/<int:pk>",
+        item_detail,
+        name="item_detail",
     ),
     path(
         "items/<int:pk>/delete",

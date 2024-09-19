@@ -212,6 +212,12 @@ class ItemsListView(generic.ListView):
         return get_user_items(self.request.user)
 
 
+@login_required
+def item_detail(request, pk):
+    item = get_object_or_404(Item, pk=pk)
+    return render(request, "backend/item/detail.html", {"item": item})
+
+
 class ItemBaseView(generic.View):
     def get_form(self, *args, **kwargs):
         form = super().get_form(*args, **kwargs)
