@@ -24,29 +24,25 @@ def get_all_users_from_communities_the_user_belongs_to(user: User) -> list[User]
 
 
 def get_items_available_for_lease(user: User) -> QuerySet[Item]:
-    all_users_of_communities_the_user_belongs_to = (
-        get_all_users_from_communities_the_user_belongs_to(user)
-    )
-    all_items = Item.objects.filter(
-        owner__in=all_users_of_communities_the_user_belongs_to, is_active=True
+    communities_the_user_belongs_to = Community.objects.filter(members=user)
+    items_shared_to_communities_the_user_belongs_to = Item.objects.filter(
+        shared_with__in=communities_the_user_belongs_to
     )
     items_already_leased_out = Lease.objects.filter(
         end_date__gt=datetime.now(),
-        item__in=all_items,
+        item__in=items_shared_to_communities_the_user_belongs_to,
     )
-    return all_items.exclude(owner=user).exclude(
+    return items_shared_to_communities_the_user_belongs_to.exclude(owner=user).exclude(
         pk__in=[lease.item.pk for lease in items_already_leased_out]
     )
 
 
 def get_subscriptions_available_for_share(user: User) -> QuerySet[Subscription]:
-    all_users_of_communities_the_user_belongs_to = (
-        get_all_users_from_communities_the_user_belongs_to(user)
+    communities_the_user_belongs_to = Community.objects.filter(members=user)
+    subscriptions_shared_to_communities_the_user_belongs_to = (
+        Subscription.objects.filter(shared_with__in=communities_the_user_belongs_to)
     )
-    all_subscriptions = Subscription.objects.filter(
-        owner__in=all_users_of_communities_the_user_belongs_to
-    )
-    return all_subscriptions.exclude(owner=user).exclude(shared_to=user)
+    return subscriptions_shared_to_communities_the_user_belongs_to.exclude(owner=user)
 
 
 def get_dashboard_data(user: User) -> dict:
@@ -140,9 +136,9 @@ def get_data_for_community_detail(community_id: int, request) -> dict | None:
 
     members = community.members.all()
 
-    shared_items = Item.objects.filter(owner__in=members, is_active=True)
+    shared_items = community.shared_items.all()
     shared_items_count = shared_items.count()
-    shared_subscriptions = Subscription.objects.filter(owner__in=members)
+    shared_subscriptions = community.shared_subscriptions.all()
     shared_subscriptions_count = shared_subscriptions.count()
     invite_link = __get_invite_link(request, community.invite_uuid)
 

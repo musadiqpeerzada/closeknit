@@ -17,6 +17,9 @@ class Subscription(models.Model):
     shared_to = models.ManyToManyField(
         "auth.User", related_name="shared_subscriptions", blank=True
     )
+    shared_with = models.ManyToManyField(
+        "Community", related_name="shared_subscriptions", blank=True
+    )
 
     def __str__(self):
         return self.name
@@ -56,6 +59,9 @@ class Item(models.Model):
         max_length=20,
         choices=ITEM_TYPE_CHOICES,
         default=OTHER,
+    )
+    shared_with = models.ManyToManyField(
+        Community, related_name="shared_items", blank=True
     )
 
     def __str__(self):

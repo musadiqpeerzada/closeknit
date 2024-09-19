@@ -72,26 +72,12 @@ class SubscriptionListView(generic.ListView):
         return get_user_subscriptions(self.request.user)
 
 
-class SubscriptionAddForm(forms.ModelForm):
-    shared_to = forms.ModelMultipleChoiceField(
-        queryset=User.objects.none(),
-        required=False,
-        widget=forms.CheckboxSelectMultiple,
-    )
-
-    class Meta:
-        model = Subscription
-        fields = ["name", "is_active", "shared_to"]
-
-
-class SubscriptionAddView(generic.CreateView):
-    template_name = "backend/subscription/cud.html"
-    model = Subscription
-    form_class = SubscriptionAddForm
-    success_url = reverse_lazy("subscription_list")
-
-    def get_form(self, form_class=None):
-        form = super().get_form(form_class)
+class SubscriptionBaseView(generic.View):
+    def get_form(self, *args, **kwargs):
+        form = super().get_form(*args, **kwargs)
+        form.fields["shared_with"].queryset = Community.objects.filter(
+            members=self.request.user
+        )
         form.instance.owner = self.request.user
         form.fields["shared_to"].queryset = User.objects.filter(
             pk__in=[
@@ -102,6 +88,30 @@ class SubscriptionAddView(generic.CreateView):
             ]
         ).exclude(pk=self.request.user.pk)
         return form
+
+
+class SubscriptionAddForm(forms.ModelForm):
+    shared_to = forms.ModelMultipleChoiceField(
+        queryset=User.objects.none(),
+        required=False,
+        widget=forms.CheckboxSelectMultiple,
+    )
+    shared_with = forms.ModelMultipleChoiceField(
+        queryset=Community.objects.none(),
+        required=False,
+        widget=forms.CheckboxSelectMultiple,
+    )
+
+    class Meta:
+        model = Subscription
+        fields = ["name", "is_active", "shared_to", "shared_with"]
+
+
+class SubscriptionAddView(SubscriptionBaseView, generic.CreateView):
+    template_name = "backend/subscription/cud.html"
+    model = Subscription
+    form_class = SubscriptionAddForm
+    success_url = reverse_lazy("subscription_list")
 
     def form_valid(self, form):
         form.instance.owner = self.request.user
@@ -114,29 +124,22 @@ class SubscriptionUpdateForm(forms.ModelForm):
         required=False,
         widget=forms.CheckboxSelectMultiple,
     )
+    shared_with = forms.ModelMultipleChoiceField(
+        queryset=Community.objects.none(),
+        required=False,
+        widget=forms.CheckboxSelectMultiple,
+    )
 
     class Meta:
         model = Subscription
-        fields = ["name", "is_active", "shared_to"]
+        fields = ["name", "is_active", "shared_to", "shared_with"]
 
 
-class SubscriptionUpdateView(generic.UpdateView):
+class SubscriptionUpdateView(SubscriptionBaseView, generic.UpdateView):
     template_name = "backend/subscription/cud.html"
     model = Subscription
     form_class = SubscriptionUpdateForm
     success_url = reverse_lazy("subscription_list")
-
-    def get_form(self, form_class=None):
-        form = super().get_form(form_class)
-        form.fields["shared_to"].queryset = User.objects.filter(
-            pk__in=[
-                user.pk
-                for user in get_all_users_from_communities_the_user_belongs_to(
-                    self.request.user
-                )
-            ]
-        ).exclude(pk=self.request.user.pk)
-        return form
 
     def get_queryset(self):
         return Subscription.objects.filter(owner=self.request.user)
@@ -247,10 +250,31 @@ class ItemsListView(generic.ListView):
         return get_user_items(self.request.user)
 
 
-class ItemCreateView(generic.CreateView):
+class ItemBaseView(generic.View):
+    def get_form(self, *args, **kwargs):
+        form = super().get_form(*args, **kwargs)
+        form.fields["shared_with"].queryset = Community.objects.filter(
+            members=self.request.user
+        )
+        return form
+
+
+class ItemCreateForm(forms.ModelForm):
+    shared_with = forms.ModelMultipleChoiceField(
+        queryset=Community.objects.none(),
+        required=False,
+        widget=forms.CheckboxSelectMultiple,
+    )
+
+    class Meta:
+        model = Item
+        fields = ["name", "item_type", "shared_with"]
+
+
+class ItemCreateView(ItemBaseView, generic.CreateView):
     template_name = "backend/item/cud.html"
     model = Item
-    fields = ["name", "item_type"]
+    form_class = ItemCreateForm
     success_url = reverse_lazy("item_list")
 
     def form_valid(self, form):
@@ -258,10 +282,28 @@ class ItemCreateView(generic.CreateView):
         return super().form_valid(form)
 
 
-class ItemUpdateView(generic.UpdateView):
+class ItemUpdateForm(forms.ModelForm):
+    shared_with = forms.ModelMultipleChoiceField(
+        queryset=Community.objects.none(),
+        required=False,
+        widget=forms.CheckboxSelectMultiple,
+    )
+
+    class Meta:
+        model = Item
+        fields = ["name", "is_active", "item_type", "shared_with"]
+
+
+class ItemUpdateView(ItemBaseView, generic.UpdateView):
+    shared_with = forms.ModelMultipleChoiceField(
+        queryset=Community.objects.none(),
+        required=False,
+        widget=forms.CheckboxSelectMultiple,
+    )
+
     template_name = "backend/item/cud.html"
     model = Item
-    fields = ["name", "is_active", "item_type"]
+    form_class = ItemUpdateForm
     success_url = reverse_lazy("item_list")
 
     def get_queryset(self):
