@@ -110,6 +110,5 @@ urlpatterns = [
         name="lease_delete",
     ),
     #     invite endpoints
-    path("community/<int:community_id>/invite/", views.send_invite, name="send_invite"),
     path("invite/<uuid:token>/", views.accept_invite, name="accept_invite"),
 ]

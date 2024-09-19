@@ -1,9 +1,10 @@
 from allauth.socialaccount.models import SocialAccount
 from django.contrib.auth.models import User
 from django.db.models import QuerySet
+from django.urls import reverse
 from datetime import datetime
 
-from backend.models import Subscription, Community, Item, Lease, Invite
+from backend.models import Subscription, Community, Item, Lease
 
 
 def get_user(user_name: str) -> User | None:
@@ -39,7 +40,9 @@ def get_items_available_for_lease(user: User) -> QuerySet[Item]:
 
 
 def get_subscriptions_available_for_share(user: User) -> QuerySet[Subscription]:
-    all_users_of_communities_the_user_belongs_to = get_all_users_from_communities_the_user_belongs_to(user)
+    all_users_of_communities_the_user_belongs_to = (
+        get_all_users_from_communities_the_user_belongs_to(user)
+    )
     all_subscriptions = Subscription.objects.filter(
         owner__in=all_users_of_communities_the_user_belongs_to
     )
@@ -64,7 +67,7 @@ def get_dashboard_data(user: User) -> dict:
         "items_available_for_lease": items_available_for_lease,
         "subscriptions_available_for_share": subscriptions_available_for_share,
         "total_available_items": items_available_for_lease
-                                 + subscriptions_available_for_share,
+        + subscriptions_available_for_share,
         "total_communities_user_belongs_to": total_communities_user_belongs_to,
         "total_active_members_across_communities": total_active_members_across_communities,
     }
@@ -100,15 +103,12 @@ def add_user_to_community(community: Community, user: User) -> None:
         community.save()
 
 
-def create_invite(community: Community, created_by: User) -> Invite:
-    return Invite.objects.create(community=community, created_by=created_by)
-
-
-def use_invite(invite: Invite, user: User) -> bool:
-    if invite.use_invite(user):
-        invite.community.members.add(user)
-        return True
-    return False
+def use_invite(invite_uuid: str, user: User) -> bool:
+    community: Community = Community.objects.filter(invite_uuid=invite_uuid).first()
+    if not community:
+        return False
+    community.members.add(user)
+    return True
 
 
 def get_data_for_profile_view(user: User):
@@ -128,7 +128,11 @@ def get_data_for_profile_view(user: User):
     )
 
 
-def get_data_for_community_detail(community_id: int) -> dict | None:
+def __get_invite_link(request, invite_uuid: str) -> str:
+    return request.build_absolute_uri(reverse("accept_invite", args=[str(invite_uuid)]))
+
+
+def get_data_for_community_detail(community_id: int, request) -> dict | None:
     try:
         community = Community.objects.get(id=community_id)
     except Community.DoesNotExist:
@@ -138,9 +142,11 @@ def get_data_for_community_detail(community_id: int) -> dict | None:
 
     shared_items_count = Item.objects.filter(owner__in=members, is_active=True).count()
     shared_subscriptions_count = Subscription.objects.filter(owner__in=members).count()
+    invite_link = __get_invite_link(request, community.invite_uuid)
 
     return {
         "community_name": community.name,
+        "invite_link": invite_link,
         "created_by": community.owner.username,
         "member_count": members.count(),
         "shared_items_count": shared_items_count,
@@ -149,7 +155,11 @@ def get_data_for_community_detail(community_id: int) -> dict | None:
             {
                 "username": member.username,
                 "email": member.email,
-                "profile_picture": member.socialaccount_set.first().get_avatar_url() if member.socialaccount_set.exists() else None,
+                "profile_picture": (
+                    member.socialaccount_set.first().get_avatar_url()
+                    if member.socialaccount_set.exists()
+                    else None
+                ),
             }
             for member in members
         ],

@@ -8,7 +8,7 @@ from django.urls import reverse_lazy, reverse
 from django.views import generic
 from django.views.generic import CreateView
 
-from backend.models import Subscription, Community, Item, Lease, Invite
+from backend.models import Subscription, Community, Item, Lease
 from backend.services import (
     get_user,
     get_all_users_from_communities_the_user_belongs_to,
@@ -17,9 +17,9 @@ from backend.services import (
     get_user_communities,
     get_user_items,
     add_user_to_community,
-    create_invite,
     use_invite,
-    get_data_for_profile_view, get_data_for_community_detail,
+    get_data_for_profile_view,
+    get_data_for_community_detail,
 )
 
 
@@ -58,7 +58,9 @@ def profile_view(request):
 
 def get_subscription_list_view(request):
     return render(
-        request, "backend/subscription/list.html", context=get_user_subscriptions(request.user)
+        request,
+        "backend/subscription/list.html",
+        context=get_user_subscriptions(request.user),
     )
 
 
@@ -165,7 +167,11 @@ def community_detail_view(request, pk):
     if not does_user_belong_to_community:
         return HttpResponseBadRequest("You do not belong to this community")
 
-    return render(request, "backend/community/detail.html", get_data_for_community_detail(pk))
+    return render(
+        request,
+        "backend/community/detail.html",
+        get_data_for_community_detail(pk, request=request),
+    )
 
 
 class CommunityUpdateForm(forms.ModelForm):
@@ -325,34 +331,18 @@ class LeaseDeleteView(generic.DeleteView):
         return Lease.objects.filter(item__owner=self.request.user)
 
 
-@login_required
-def send_invite(request, community_id):
-    community = get_object_or_404(Community, id=community_id, owner=request.user)
-    if request.method == "POST":
-        invite = create_invite(community, request.user)
-        invite_url = request.build_absolute_uri(
-            reverse("accept_invite", args=[str(invite.token)])
-        )
-        return render(
-            request,
-            "backend/invite/show_invite_link.html",
-            {"invite_url": invite_url, "community": community},
-        )
-    return render(request, "backend/invite/send_invite.html", {"community": community})
-
-
 def accept_invite(request, token):
-    invite = get_object_or_404(Invite, token=token)
-    if invite.is_used or invite.is_expired():
-        return HttpResponseBadRequest("This invite is no longer valid.")
-
     if request.user.is_authenticated:
         if request.method == "POST":
-            if use_invite(invite, request.user):
+            if use_invite(invite_uuid=token, user=request.user):
                 return redirect("community_list")
             else:
                 return HttpResponseBadRequest("Unable to use this invite.")
-        return render(request, "backend/invite/confirm_invite.html", {"invite": invite})
+
+        community = get_object_or_404(Community, invite_uuid=token)
+        return render(
+            request, "backend/invite/confirm_invite.html", {"community": community}
+        )
     else:
         return redirect(
             f"/accounts/google/login/?process=login&next={reverse('accept_invite', args=[token])}"

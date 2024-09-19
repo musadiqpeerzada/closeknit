@@ -6,6 +6,19 @@
             <h1 class="title is-2 has-text-centered">{{ community_name }}</h1>
             <p class="subtitle has-text-centered">Created by {{ created_by|title }}</p>
 
+            <section class="py-4">
+                <div class="field has-addons">
+                    <div class="control is-expanded">
+                        <input class="input" type="text" id="invite-link" value="{{ invite_link }}" readonly>
+                    </div>
+                    <div class="control">
+                        <button class="button is-primary" onclick="copyInviteLink()">
+                            <span>Copy Invite Link</span>
+                        </button>
+                    </div>
+                </div>
+            </section>
+
             <div class="columns is-centered has-text-centered">
                 <div class="column">
                     <div class="notification is-primary">
@@ -49,4 +62,18 @@
             </div>
         </div>
     </section>
+
+
+
+    <script>
+        function copyInviteLink() {
+            const copyText = document.getElementById("invite-link");
+            copyText.select();
+            copyText.setSelectionRange(0, 99999); // For mobile devices
+            document.execCommand("copy");
+
+            // Optional: Provide feedback to the user
+            alert("Invite link copied to clipboard!");
+        }
+    </script>
 {% endblock %}
