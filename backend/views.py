@@ -28,6 +28,8 @@ from backend.services import (
     use_invite,
     get_data_for_profile_view,
     get_data_for_community_detail,
+    get_items_available_for_lease,
+    get_subscriptions_available_for_share,
 )
 
 
@@ -78,6 +80,11 @@ class SubscriptionListView(generic.ListView):
 
 def subscription_detail_view(request, pk):
     subscription = get_object_or_404(Subscription, pk=pk)
+    if (
+        subscription.owner != request.user
+        and subscription not in get_subscriptions_available_for_share(request.user)
+    ):
+        return HttpResponseBadRequest("You do not have access to this subscription")
     return render(
         request, "backend/subscription/detail.html", {"subscription": subscription}
     )
@@ -222,6 +229,10 @@ class ItemsListView(generic.ListView):
 @login_required
 def item_detail(request, pk):
     item = get_object_or_404(Item, pk=pk)
+    if item.owner != request.user and item not in get_items_available_for_lease(
+        request.user
+    ):
+        return HttpResponseBadRequest("You do not have access to this item")
     return render(request, "backend/item/detail.html", {"item": item})
 
 
