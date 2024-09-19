@@ -8,45 +8,13 @@
         </div>
 
         {% if communities.owned %}
-            <h2 class="title is-4 mb-4">You Created</h2>
-            <div class="columns is-multiline">
-                {% for community in communities.owned %}
-                    <div class="column is-half-tablet is-one-quarter-desktop">
-                        <div class="card">
-                            <header class="card-header">
-                                <p class="card-header-title">{{ community.name|title }}</p>
-                            </header>
-                            <footer class="card-footer">
-                                <a href="{% url 'community_add_member' community.id %}"
-                                   class="card-footer-item">Add</a>
-                                <a href="{% url 'community_update' community.id %}"
-                                   class="card-footer-item">Update</a>
-                                <a href="{% url 'community_delete' community.id %}"
-                                   class="card-footer-item has-text-danger">Delete</a>
-                            </footer>
-                        </div>
-                    </div>
-                {% endfor %}
-            </div>
+            <h2 class="title is-4 mt-6 mb-4">Your communities</h2>
+            {% include 'backend/_partials/community_listing.html' with communities=communities.owned %}
         {% endif %}
 
         {% if communities.shared %}
             <h2 class="title is-4 mt-6 mb-4">You Are a Member Of</h2>
-            <div class="columns is-multiline">
-                {% for community in communities.shared %}
-                    <a class="column is-half-tablet is-one-quarter-desktop"
-                       href="{% url 'community_detail' community.pk %}">
-                        <div class="card">
-                            <header class="card-header">
-                                <p class="card-header-title">{{ community.name|title }}</p>
-                            </header>
-                            <div class="card-content">
-                                <p class="subtitle is-6">Run by {{ community.owner.username }}</p>
-                            </div>
-                        </div>
-                    </a>
-                {% endfor %}
-            </div>
+            {% include 'backend/_partials/community_listing.html' with communities=communities.shared %}
         {% endif %}
     </section>
 

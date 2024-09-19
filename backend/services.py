@@ -140,8 +140,10 @@ def get_data_for_community_detail(community_id: int, request) -> dict | None:
 
     members = community.members.all()
 
-    shared_items_count = Item.objects.filter(owner__in=members, is_active=True).count()
-    shared_subscriptions_count = Subscription.objects.filter(owner__in=members).count()
+    shared_items = Item.objects.filter(owner__in=members, is_active=True)
+    shared_items_count = shared_items.count()
+    shared_subscriptions = Subscription.objects.filter(owner__in=members)
+    shared_subscriptions_count = shared_subscriptions.count()
     invite_link = __get_invite_link(request, community.invite_uuid)
 
     return {
@@ -149,7 +151,9 @@ def get_data_for_community_detail(community_id: int, request) -> dict | None:
         "invite_link": invite_link,
         "created_by": community.owner.username,
         "member_count": members.count(),
+        "shared_items": shared_items,
         "shared_items_count": shared_items_count,
+        "shared_subscriptions": shared_subscriptions,
         "shared_subscriptions_count": shared_subscriptions_count,
         "members": [
             {

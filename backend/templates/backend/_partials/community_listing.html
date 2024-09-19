@@ -1,0 +1,15 @@
+<div class="columns is-multiline">
+    {% for community in communities %}
+        <a class="column is-half-tablet is-one-quarter-desktop"
+           href="{% url 'community_detail' community.pk %}">
+            <div class="card">
+                <header class="card-header">
+                    <p class="card-header-title">{{ community.name|title }}</p>
+                </header>
+                <div class="card-content">
+                    <p class="subtitle is-6">Run by {{ community.owner.username }}</p>
+                </div>
+            </div>
+        </a>
+    {% endfor %}
+</div>

@@ -60,6 +60,21 @@
                     {% endfor %}
                 </div>
             </div>
+
+            {% if shared_items %}
+                <div class="content">
+                    <h2 class="title is-4">Shared Items by community members</h2>
+                    {% include 'backend/_partials/item_listing.html' with items=shared_items %}
+                </div>
+            {% endif %}
+
+            {% if shared_subscriptions %}
+                <div class="content">
+                    <h2 class="title is-4">Shared Subscriptions by community members</h2>
+                    {% include 'backend/_partials/subscription_listing.html' with subscriptions=shared_subscriptions %}
+                </div>
+            {% endif %}
+
         </div>
     </section>
 
