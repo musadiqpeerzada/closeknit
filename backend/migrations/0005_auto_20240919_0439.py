@@ -19,9 +19,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name="community",
             name="invite_uuid",
-            field=models.UUIDField(
-                default=uuid.uuid4, editable=False, unique=True, null=True
-            ),
+            field=models.UUIDField(null=True, blank=True),
         ),
         migrations.RunPython(gen_uuid, reverse_code=migrations.RunPython.noop),
         migrations.AlterField(
