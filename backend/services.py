@@ -46,26 +46,12 @@ def get_subscriptions_available_for_share(user: User) -> QuerySet[Subscription]:
 
 
 def get_dashboard_data(user: User) -> dict:
-    users_in_communities = get_all_users_from_communities_the_user_belongs_to(user)
-    your_items_count = Item.objects.filter(owner=user).count()
-    your_subscriptions_count = Subscription.objects.filter(owner=user).count()
-    items_available_for_lease = get_items_available_for_lease(user).count()
-    subscriptions_available_for_share = get_subscriptions_available_for_share(
-        user=user
-    ).count()
-    total_active_members_across_communities = len(users_in_communities)
-    total_communities_user_belongs_to = Community.objects.filter(members=user).count()
+    items_available_for_lease = get_items_available_for_lease(user)
+    subscriptions_available_for_share = get_subscriptions_available_for_share(user=user)
 
     return {
-        "your_items_count": your_items_count,
-        "your_subscriptions_count": your_subscriptions_count,
-        "total_shared_items": your_items_count + your_subscriptions_count,
         "items_available_for_lease": items_available_for_lease,
         "subscriptions_available_for_share": subscriptions_available_for_share,
-        "total_available_items": items_available_for_lease
-        + subscriptions_available_for_share,
-        "total_communities_user_belongs_to": total_communities_user_belongs_to,
-        "total_active_members_across_communities": total_active_members_across_communities,
     }
 
 

@@ -13,41 +13,20 @@
                     Your sharing community is thriving. Here's what's new:
                 </p>
 
-                <div class="columns is-multiline mt-6">
-                    <div class="column is-half">
-                        <div class="box">
-                            <h2 class="title is-4">Available to borrow</h2>
-                            <p class="highlight-number">{{ total_available_items }}</p>
-                            <p>{{ items_available_for_lease }} items available</p>
-                            <p>{{ subscriptions_available_for_share }} subscriptions could be shared</p>
-                        </div>
-                    </div>
+                {% if items_available_for_lease %}
+                    <section class="py-4">
+                        <h2 class="title is-4">Items available from your communities</h2>
+                        {% include 'backend/_partials/item_listing.html' with items=items_available_for_lease %}
+                    </section>
+                {% endif %}
 
-                    <div class="column is-half">
-                        <div class="box">
-                            <h2 class="title is-4">Shared by you</h2>
-                            <p class="highlight-number">{{ total_shared_items }}</p>
-                            <p>You're sharing {{ your_items_count }} items</p>
-                            <p>You're sharing {{ your_subscriptions_count }} subscriptions</p>
-                            <div>
-                                <a href="{% url 'item_list' %}" class="button is-light mt-3">Manage Items</a>
-                                <a href="{% url 'subscription_list' %}" class="button is-light mt-3">
-                                    Manage Subscriptions
-                                </a>
-                            </div>
-                        </div>
-                    </div>
+                {% if  subscriptions_available_for_share %}
+                    <section class="py-4">
+                        <h2 class="title is-4">Subscriptions available from your communities</h2>
+                        {% include 'backend/_partials/subscription_listing.html' with subscriptions=subscriptions_available_for_share %}
+                    </section>
+                {% endif %}
 
-                    <div class="column is-half">
-                        <div class="box">
-                            <h2 class="title is-4">Community Highlights</h2>
-                            <p class="highlight-number">{{ total_active_members_across_communities }}</p>
-                            <p>There are {{ total_active_members_across_communities }} active members across</p>
-                            <p>You belong to {{ total_communities_user_belongs_to }} communities</p>
-                            <a href="{% url 'community_list' %}" class="button is-light mt-3">Manage community</a>
-                        </div>
-                    </div>
-                </div>
             </div>
         </section>
     {% else %}
