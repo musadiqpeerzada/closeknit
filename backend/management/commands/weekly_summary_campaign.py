@@ -13,22 +13,25 @@ from backend.services import (
 
 
 def format_email_content(shared_items, shared_subscriptions):
-    content = "Here's what's new in your Closeknit communities this week:\n\n"
+    closeknit_link = '<a href="https://closeknit.io">Closeknit</a>'
+    content = (
+        f"Here's what's new in your {closeknit_link} communities last week:<br><br>"
+    )
 
     if shared_items:
-        content += "Shared Items:\n"
+        content += "Shared Items:<br>"
         for item in shared_items:
-            content += f"- {item.name} (shared by {item.owner.username})\n"
-        content += "\n"
+            content += f"- {item.name} (shared by {item.owner.username})<br>"
+        content += "<br>"
 
     if shared_subscriptions:
-        content += "Shared Subscriptions:\n"
+        content += "Shared Subscriptions:<br>"
         for subscription in shared_subscriptions:
             content += (
-                f"- {subscription.name} (shared by {subscription.owner.username})\n"
+                f"- {subscription.name} (shared by {subscription.owner.username})<br>"
             )
 
-    content += "\nVisit Closeknit to learn more about these shared resources & Always feel free to reach out to your closeknit community!"
+    content += '<br>Always feel free to reach out to the owners in your closeknit community if you want to borrow. Visit <a href="https://closeknit.io">Closeknit</a> to learn more about these shared resources!'
     return content
 
 
