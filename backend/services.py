@@ -2,8 +2,7 @@ from allauth.socialaccount.models import SocialAccount
 from django.contrib.auth.models import User
 from django.db.models import QuerySet
 from django.urls import reverse
-from datetime import datetime
-
+from django.utils import timezone
 from backend.models import Subscription, Community, Item, Lease
 
 
@@ -29,7 +28,7 @@ def get_items_available_for_lease(user: User) -> QuerySet[Item]:
         shared_with__in=communities_the_user_belongs_to
     )
     items_already_leased_out = Lease.objects.filter(
-        end_date__gt=datetime.now(),
+        end_date__gt=timezone.now(),
         item__in=items_shared_to_communities_the_user_belongs_to,
     )
     return items_shared_to_communities_the_user_belongs_to.exclude(owner=user).exclude(
