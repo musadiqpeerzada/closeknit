@@ -185,7 +185,7 @@ STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 # Anymail settings
 ANYMAIL = {
-    "POSTMARK_SERVER_TOKEN": os.environ.get("POSTMARK_SERVER_TOKEN"),
+    "BREVO_API_KEY": os.environ.get("BREVO_API_KEY"),
 }
-EMAIL_BACKEND = "anymail.backends.postmark.EmailBackend"
+EMAIL_BACKEND = "anymail.backends.brevo.EmailBackend"
 DEFAULT_FROM_EMAIL = "tech@closeknit.io"

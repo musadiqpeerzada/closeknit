@@ -2,9 +2,8 @@ import json
 
 from django.core.management.base import BaseCommand
 from django.contrib.auth.models import User
-from django.utils import timezone
 from django.conf import settings
-from datetime import timedelta
+from django.core.mail import send_mail
 
 from backend.services import (
     get_subscriptions_available_for_share,
@@ -15,7 +14,7 @@ from backend.services import (
 def format_email_content(shared_items, shared_subscriptions):
     closeknit_link = '<a href="https://closeknit.io">Closeknit</a>'
     content = (
-        f"Here's what's new in your {closeknit_link} communities last week:<br><br>"
+        f"Here's what's being shared in your {closeknit_link} communities:<br><br>"
     )
 
     if shared_items:
@@ -39,19 +38,14 @@ class Command(BaseCommand):
     help = "Send weekly email to users about items and subscriptions shared with them"
 
     def handle(self, *args, **options):
-        seven_days_ago = timezone.now() - timedelta(days=7)
         users = User.objects.all()
 
         for user in users:
             # Fetch items shared with the user in the last 7 days
-            shared_items = get_items_available_for_lease(user).filter(
-                created_at__gte=seven_days_ago
-            )
+            shared_items = get_items_available_for_lease(user)
 
             # Fetch subscriptions shared with the user in the last 7 days
-            shared_subscriptions = get_subscriptions_available_for_share(user).filter(
-                created_at__gte=seven_days_ago
-            )
+            shared_subscriptions = get_subscriptions_available_for_share(user)
 
             if shared_items or shared_subscriptions:
                 self.send_email(user, shared_items, shared_subscriptions)
@@ -73,5 +67,11 @@ class Command(BaseCommand):
                 indent=4,
             )
         )
-        # send_mail(subject, message, from_email, recipient_list)
-        self.stdout.write(self.style.SUCCESS(f"Email sent to {user.email}"))
+        send_mail(
+            subject=subject,
+            from_email=from_email,
+            recipient_list=recipient_list,
+            html_message=message,
+            message="",
+        )
+        self.stdout.write(self.style.SUCCESS(f"Email sent to {recipient_list}"))

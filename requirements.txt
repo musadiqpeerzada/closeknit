@@ -8,4 +8,4 @@ django-widget-tweaks
 django-select2
 whitenoise
 django-allauth[mfa,saml,socialaccount,steam]
-django-anymail[postmark]
+django-anymail[brevo]
