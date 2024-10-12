@@ -13,24 +13,30 @@ from backend.services import (
 
 def format_email_content(shared_items, shared_subscriptions):
     closeknit_link = '<a href="https://closeknit.io">Closeknit</a>'
-    content = (
-        f"Here's what's being shared in your {closeknit_link} communities:<br><br>"
-    )
+    content = f" We're thrilled to share some exciting updates from your {closeknit_link} community!<br><br>"
 
     if shared_items:
-        content += "Shared Items:<br>"
+        content += "📢 What's in the Sharing Pool:<br>"
         for item in shared_items:
             content += f"- {item.name} (shared by {item.owner.username})<br>"
         content += "<br>"
 
     if shared_subscriptions:
-        content += "Shared Subscriptions:<br>"
+        content += "📢 Subscriptions available for sharing:<br>"
         for subscription in shared_subscriptions:
             content += (
                 f"- {subscription.name} (shared by {subscription.owner.username})<br>"
             )
 
-    content += '<br>Always feel free to reach out to the owners in your closeknit community if you want to borrow. Visit <a href="https://closeknit.io">Closeknit</a> to learn more about these shared resources!'
+    content += """
+<br><br>🤝 Remember, sharing is caring! Feel free to reach out to bharat or any other community members if you'd like to borrow these items. It's a great way to connect with your neighbors and make the most of our shared resources.
+
+<br><br>Have something interesting to share with the community? We'd love to see what you can add to our growing pool of shared treasures!
+
+<br><br>🔍 Curious to learn more? Visit our Closeknit website to discover all the amazing resources available in your community.
+
+<br><br>Stay connected, stay sharing, and enjoy the power of community!    
+    """
     return content
 
 
@@ -51,7 +57,7 @@ class Command(BaseCommand):
                 self.send_email(user, shared_items, shared_subscriptions)
 
     def send_email(self, user, shared_items, shared_subscriptions):
-        subject = "Your community is sharing! 🎉"
+        subject = "Exciting Updates from Your Closeknit Community! 🎉"
         message = format_email_content(shared_items, shared_subscriptions)
         from_email = settings.DEFAULT_FROM_EMAIL
         recipient_list = [user.email]
