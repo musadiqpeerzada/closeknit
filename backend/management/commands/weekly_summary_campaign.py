@@ -3,7 +3,7 @@ import json
 from django.core.management.base import BaseCommand
 from django.contrib.auth.models import User
 from django.conf import settings
-from django.core.mail import send_mail
+from django.core.mail import EmailMessage
 
 from backend.services import (
     get_subscriptions_available_for_share,
@@ -29,11 +29,11 @@ def format_email_content(shared_items, shared_subscriptions):
             )
 
     content += """
-<br><br>🤝 Remember, sharing is caring! Feel free to reach out to bharat or any other community members if you'd like to borrow these items. It's a great way to connect with your neighbors and make the most of our shared resources.
+<br><br>Remember, sharing is caring! Feel free to reach out to bharat or any other community members if you'd like to borrow these items. It's a great way to connect with your neighbors and make the most of our shared resources.
 
 <br><br>Have something interesting to share with the community? We'd love to see what you can add to our growing pool of shared treasures!
 
-<br><br>🔍 Curious to learn more? Visit our Closeknit website to discover all the amazing resources available in your community.
+<br><br>Curious to learn more? Visit our Closeknit website to discover all the amazing resources available in your community.
 
 <br><br>Stay connected, stay sharing, and enjoy the power of community!    
     """
@@ -67,17 +67,18 @@ class Command(BaseCommand):
                 dict(
                     subject=subject,
                     message=message,
-                    from_email=from_email,
+                    from_email=f"Closeknit <{from_email}>",
                     recipient_list=recipient_list,
                 ),
                 indent=4,
             )
         )
-        send_mail(
+        email_message = EmailMessage(
             subject=subject,
-            from_email=from_email,
-            recipient_list=recipient_list,
-            html_message=message,
-            message="",
+            body=message,
+            from_email=f"Closeknit <{from_email}>",
+            to=recipient_list,
         )
+        email_message.content_subtype = "html"  # Main content is now text/html
+        email_message.send()
         self.stdout.write(self.style.SUCCESS(f"Email sent to {recipient_list}"))
