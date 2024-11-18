@@ -29,11 +29,11 @@ def format_email_content(shared_items, shared_subscriptions):
             )
 
     content += """
-<br><br>Remember, sharing is caring! Feel free to reach out to bharat or any other community members if you'd like to borrow these items. It's a great way to connect with your neighbors and make the most of our shared resources.
+<br><br>Remember, sharing is caring! Feel free to reach out to members of your community if you'd like to borrow these items. It's a great way to connect with your neighbors and make the most of our shared resources.
 
-<br><br>Have something interesting to share with the community? We'd love to see what you can add to our growing pool of shared treasures!
+<br><br>Have something interesting to share with the community? We'd love to see what you can add to our growing pool of shared treasures at <a href="https://closeknit.io">Closeknit</a>!
 
-<br><br>Curious to learn more? Visit our Closeknit website to discover all the amazing resources available in your community.
+<br><br>Curious to learn more? Visit our <a href="https://closeknit.io">Closeknit</a> website to discover all the amazing resources available in your community.
 
 <br><br>Stay connected, stay sharing, and enjoy the power of community!    
     """
