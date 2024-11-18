@@ -16,13 +16,12 @@ def format_email_content(shared_items, shared_subscriptions):
     content = f" We're thrilled to share some exciting updates from your {closeknit_link} community!<br><br>"
 
     if shared_items:
-        content += "📢 What's in the Sharing Pool:<br>"
+        content += "<h2>📢 What's in the Sharing Pool:</h2>"
         for item in shared_items:
             content += f"- {item.name} (shared by {item.owner.username})<br>"
-        content += "<br>"
 
     if shared_subscriptions:
-        content += "📢 Subscriptions available for sharing:<br>"
+        content += "<h2>📢 Subscriptions available for sharing</h2>:"
         for subscription in shared_subscriptions:
             content += (
                 f"- {subscription.name} (shared by {subscription.owner.username})<br>"
