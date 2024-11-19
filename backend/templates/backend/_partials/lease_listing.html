@@ -1,23 +1,33 @@
-<div class="columns is-multiline">
+<div class="columns is-multiline is-variable is-2">
     {% for leased_item in items %}
-        <div class="column is-one-third pl-0">
-            <div class="card">
-                <div class="card-content">
-                    <p class="title is-4">{{ leased_item.item.name | title }}</p>
-                    <p>To <em>{{ leased_item.item.owner | title }}</em> from
-                        <span>{{ leased_item.start_date|date:"Y-m-d" }}</span>
-                        to
-                        <span>{{ leased_item.end_date|date:"Y-m-d" }}</span></p>
-                    {% if leased_item.item.owner == user %}
-                        <div class="column is-narrow has-text-right">
-                            <a href="{% url 'lease_update' leased_item.pk %}" class="button is-info is-small">
-                                Update
-                            </a>
-                            <a href="{% url 'lease_delete' leased_item.pk %}" class="button is-danger is-small">
-                                Delete
-                            </a>
-                        </div>
-                    {% endif %}
+        <div class="column is-one-third">
+            <div class="box p-3 has-background-white">
+                <div class="has-text-dark">
+                    <h3 class="title is-5 mb-2">{{ leased_item.item.name | title }}</h3>
+                    <p class="is-size-7 has-text-grey">
+                        {{ leased_item.start_date|date:"Y-m-d" }} to {{ leased_item.end_date|date:"Y-m-d" }}
+                    </p>
+                    <div class="is-flex is-justify-content-space-between is-align-items-center mt-2">
+                        <span class="tag is-warning is-light is-uppercase">
+                            Lease
+                        </span>
+                        {% if leased_item.item.owner == user %}
+                            <div class="is-flex is-gap-2">
+                                <a href="{% url 'lease_update' leased_item.pk %}" 
+                                   class="button is-small is-info is-light">
+                                    <span class="icon">
+                                        <i class="fas fa-edit"></i>
+                                    </span>
+                                </a>
+                                <a href="{% url 'lease_delete' leased_item.pk %}" 
+                                   class="button is-small is-danger is-light">
+                                    <span class="icon">
+                                        <i class="fas fa-trash"></i>
+                                    </span>
+                                </a>
+                            </div>
+                        {% endif %}
+                    </div>
                 </div>
             </div>
         </div>

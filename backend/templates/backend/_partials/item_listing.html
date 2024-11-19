@@ -1,27 +1,33 @@
-<div class="columns is-multiline">
+<div class="columns is-multiline is-variable is-2">
     {% for item in items %}
-        <div class="column is-one-third pl-0">
-            <a href="{% url 'item_detail' item.pk %}">
-                <div class="card">
-                    <div class="card-content">
-                        <p class="title is-4 mb-1">{{ item.name | title }}</p>
-                        <p>From <em>{{ item.owner | title }}</em></p>
-                        <span class="tag is-info">
-                        {{ item.get_item_type_display }}
-                    </span>
+        <div class="column is-one-third">
+            <div class="box p-3 has-background-white">
+                <a href="{% url 'item_detail' item.pk %}" class="has-text-dark">
+                    <h3 class="title is-5 mb-2">{{ item.name | title }}</h3>
+                    <p class="is-size-7 has-text-grey">Shared by {{ item.owner | title }}</p>
+                    <div class="is-flex is-justify-content-space-between is-align-items-center mt-2">
+                        <span class="tag is-info is-light is-uppercase">
+                            {{ item.get_item_type_display }}
+                        </span>
                         {% if item.owner == user %}
-                            <div class="column is-narrow has-text-right">
-                                <a href="{% url 'item_update' item.pk %}" class="button is-small">
-                                    Update
+                            <div class="is-flex is-gap-2">
+                                <a href="{% url 'item_update' item.pk %}" 
+                                   class="button is-small is-info is-light">
+                                    <span class="icon">
+                                        <i class="fas fa-edit"></i>
+                                    </span>
                                 </a>
-                                <a href="{% url 'item_delete' item.pk %}" class="button is-danger is-small">
-                                    Delete
+                                <a href="{% url 'item_delete' item.pk %}" 
+                                   class="button is-small is-danger is-light">
+                                    <span class="icon">
+                                        <i class="fas fa-trash"></i>
+                                    </span>
                                 </a>
                             </div>
                         {% endif %}
                     </div>
-                </div>
-            </a>
+                </a>
+            </div>
         </div>
     {% endfor %}
 </div>

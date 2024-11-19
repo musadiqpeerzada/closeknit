@@ -1,15 +1,17 @@
-<div class="columns is-multiline">
+<div class="columns is-multiline is-variable is-2">
     {% for community in communities %}
-        <a class="column is-half-tablet is-one-quarter-desktop"
-           href="{% url 'community_detail' community.pk %}">
-            <div class="card">
-                <header class="card-header">
-                    <p class="card-header-title">{{ community.name|title }}</p>
-                </header>
-                <div class="card-content">
-                    <p class="subtitle is-6">Run by {{ community.owner.username }}</p>
-                </div>
+        <div class="column is-one-third">
+            <div class="box p-3 has-background-white">
+                <a href="{% url 'community_detail' community.pk %}" class="has-text-dark">
+                    <h3 class="title is-5 mb-2">{{ community.name | title }}</h3>
+                    <p class="is-size-7 has-text-grey">Run by {{ community.owner.username }}</p>
+                    <div class="is-flex is-justify-content-space-between is-align-items-center mt-2">
+                        <span class="tag is-primary is-light is-uppercase">
+                            Community
+                        </span>
+                    </div>
+                </a>
             </div>
-        </a>
+        </div>
     {% endfor %}
 </div>
