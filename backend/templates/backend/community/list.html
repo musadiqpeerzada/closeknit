@@ -2,9 +2,24 @@
 {% block content %}
 
     <section class="section">
-        <div class="is-flex is-justify-content-space-between is-align-items-center mb-5">
-            <h1 class="title is-3">Communities</h1>
-            <a href="{% url 'community_add' %}" class="button is-primary">+ Create</a>
+        <div class="level">
+            <div class="level-left">
+                <div class="level-item">
+                    <h1 class="title">Communities</h1>
+                </div>
+            </div>
+            <div class="level-right">
+                <div class="level-item">
+                    <div class="is-flex is-gap-2">
+                        <a href="{% url 'community_add' %}" class="button is-primary is-light">
+                            <span class="icon">
+                                <i class="fas fa-plus"></i>
+                            </span>
+                            <span>New Community</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
         </div>
 
         {% if communities.owned %}

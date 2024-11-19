@@ -1,43 +1,70 @@
 {% extends 'backend/base.html' %}
 
 {% block content %}
-
     <section class="section">
         <div class="container">
-            <div class="columns">
+            <div class="columns is-variable is-2">
+                <!-- Profile Info -->
                 <div class="column is-3">
-                    <div class="box">
-                        <figure class="image is-128x128 mb-4 mx-auto">
+                    <div class="p-4 has-background-white" style="border: 1px solid #eee; border-radius: 6px;">
+                        <figure class="image is-96x96 mb-4 mx-auto">
                             <img class="is-rounded" src="{{ user_profile_picture }}" alt="Profile picture">
                         </figure>
-                        <h1 class="title is-4 has-text-centered">{{ user_name | title }}</h1>
-                        <p class="has-text-centered">Email: {{ user_email }}</p>
+                        <h1 class="title is-4 has-text-centered mb-2">{{ user_name | title }}</h1>
+                        <p class="has-text-centered is-size-7 has-text-grey">{{ user_email }}</p>
                     </div>
                 </div>
+
+                <!-- Main Content -->
                 <div class="column is-9">
-                    <div class="box">
-                        <h2 class="title is-4">Communities</h2>
-                        <div class="tags">
+                    <!-- Communities Section -->
+                    <div class="p-4 has-background-white mb-4" style="border: 1px solid #eee; border-radius: 6px;">
+                        <div class="is-flex is-justify-content-space-between is-align-items-center mb-3">
+                            <h2 class="title is-5 mb-0">My Communities</h2>
+                            <span class="tag is-info is-light">{{ communities_the_user_is_part_of|length }}</span>
+                        </div>
+                        <div class="tags are-medium">
                             {% for community in communities_the_user_is_part_of %}
-                                <a href="{% url 'community_detail' community.pk %}">
-                                <span class="tag subtitle">{{ community.name }}</span>
+                                <a href="{% url 'community_detail' community.pk %}" class="tag is-info is-light">
+                                    {{ community.name }}
                                 </a>
                             {% endfor %}
                         </div>
                     </div>
-                    <div class="box">
-                        <h2 class="title is-4">Shared Items</h2>
-                        <p class="is-size-5 mb-3">
-                            Number of items shared: <strong>{{ items_of_user_count }}</strong>
-                        </p>
-                        <a href="{% url 'item_list' %}" class="button is-primary">Manage Items</a>
-                    </div>
-                    <div class="box">
-                        <h2 class="title is-4">Shared Subscriptions</h2>
-                        <p class="is-size-5 mb-3">
-                            Number of subscriptions shared: <strong>{{ subscriptions_of_user_count }}</strong>
-                        </p>
-                        <a href="{% url 'subscription_list' %}" class="button is-primary">Manage Subscriptions</a>
+
+                    <!-- Sharing Stats -->
+                    <div class="columns is-variable is-2">
+                        <!-- Items Stats -->
+                        <div class="column is-6">
+                            <div class="p-4 has-background-white" style="border: 1px solid #eee; border-radius: 6px;">
+                                <div class="is-flex is-justify-content-space-between is-align-items-center mb-3">
+                                    <h2 class="title is-5 mb-0">Shared Items</h2>
+                                    <span class="tag is-primary is-light">{{ items_of_user_count }}</span>
+                                </div>
+                                <a href="{% url 'item_list' %}" class="button is-primary is-small is-fullwidth">
+                                    <span class="icon">
+                                        <i class="fas fa-box-open"></i>
+                                    </span>
+                                    <span>Manage Items</span>
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- Subscriptions Stats -->
+                        <div class="column is-6">
+                            <div class="p-4 has-background-white" style="border: 1px solid #eee; border-radius: 6px;">
+                                <div class="is-flex is-justify-content-space-between is-align-items-center mb-3">
+                                    <h2 class="title is-5 mb-0">Shared Subscriptions</h2>
+                                    <span class="tag is-primary is-light">{{ subscriptions_of_user_count }}</span>
+                                </div>
+                                <a href="{% url 'subscription_list' %}" class="button is-primary is-small is-fullwidth">
+                                    <span class="icon">
+                                        <i class="fas fa-sync"></i>
+                                    </span>
+                                    <span>Manage Subscriptions</span>
+                                </a>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

@@ -3,33 +3,50 @@
 {% block content %}
     <section class="section">
         <div class="container">
-            <h1 class="title is-2 has-text-centered">{{ community_name|title }}</h1>
-            <p class="subtitle has-text-centered">Created by {{ created_by|title }}</p>
+            <div class="p-4">
+                <div class="is-flex is-justify-content-space-between is-align-items-start mb-6">
+                    <div>
+                        <h1 class="title is-2 mb-2">{{ community_name|title }}</h1>
+                        <p class="subtitle is-6 has-text-grey">Created by {{ created_by|title }}</p>
+                    </div>
+                    {% if community_owner == user %}
+                        <div class="buttons">
+                            <a href="{% url 'community_update' pk %}" class="button is-info is-light">
+                                <span class="icon">
+                                    <i class="fas fa-edit"></i>
+                                </span>
+                            </a>
+                            <a href="{% url 'community_delete' pk %}" class="button is-danger is-light">
+                                <span class="icon">
+                                    <i class="fas fa-trash"></i>
+                                </span>
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
 
             {% if community_owner == user %}
-                <div class="buttons is-centered">
-                    <a href="{% url 'community_update' pk %}" class="button is-primary">
-                        <span>Edit</span>
-                    </a>
-                    <a href="{% url 'community_delete' pk %}" class="button is-danger">
-                        <span>Delete</span>
-                    </a>
-                </div>
-            {% endif %}
-
-            {% if shared_items_count < 3 %}
-                <a href="{% url 'item_add' %}">
-                    <article class="message is-info">
+                {% if shared_items_count|add:shared_subscriptions_count < 3 %}
+                    <article class="message is-info mt-4">
                         <div class="message-header">
-                            <p class="title is-4">Share at least three items to start inviting people!</p>
+                            <p class="title is-4 has-text-white">Share at least three items or subscriptions to start inviting people!</p>
                         </div>
                         <div class="message-body">
-                            Closeknit is all about sharing.
-                            We don't want your friends/family to join an empty community!
+                            <p>Closeknit is all about sharing. Share some items or subscriptions before inviting others!</p>
+                            <div class="buttons mt-3">
+                                <a href="{% url 'item_add' %}" class="button is-info is-light">
+                                    <span class="icon"><i class="fas fa-box"></i></span>
+                                    <span>Share an Item</span>
+                                </a>
+                                <a href="{% url 'subscription_add' %}" class="button is-info is-light">
+                                    <span class="icon"><i class="fas fa-ticket-alt"></i></span>
+                                    <span>Share a Subscription</span>
+                                </a>
+                            </div>
                         </div>
                     </article>
-                </a>
-            {% else %}
+                {% else %}
 
                 <section class="py-4">
                     <div class="field has-addons">
@@ -38,51 +55,67 @@
                         </div>
                         <div class="control">
                             <button class="button is-primary" onclick="copyInviteLink()">
-                                <span>Copy Invite Link</span>
+                                <span class="icon">
+                                    <i class="fas fa-copy"></i>
+                                </span>
                             </button>
                         </div>
                     </div>
                 </section>
+                {% endif %}
             {% endif %}
 
-
-
-
-            <div class="columns is-centered has-text-centered">
-                <div class="column">
-                    <div class="notification is-primary">
-                        <p class="heading">Members</p>
-                        <p class="title">{{ member_count }}</p>
+            <div class="mt-6 mb-6">
+                <div class="columns is-mobile is-multiline is-centered">
+                    <div class="column is-narrow has-text-centered">
+                        <div class="px-4">
+                            <p class="title is-1 is-size-2-mobile mb-2">{{ member_count }}</p>
+                            <p class="subtitle is-6 has-text-grey">Members</p>
+                        </div>
                     </div>
-                </div>
-                <div class="column">
-                    <div class="notification is-info">
-                        <p class="heading">Shared Items</p>
-                        <p class="title">{{ shared_items_count }}</p>
+                    
+                    <div class="column is-narrow is-hidden-mobile">
+                        <div class="is-flex is-align-items-center has-text-grey px-4" style="height: 60px;">
+                            <i class="fas fa-circle" style="font-size: 0.5rem;"></i>
+                        </div>
                     </div>
-                </div>
-                <div class="column">
-                    <div class="notification is-success">
-                        <p class="heading">Shared Subscriptions</p>
-                        <p class="title">{{ shared_subscriptions_count }}</p>
+                    
+                    <div class="column is-narrow has-text-centered">
+                        <div class="px-4">
+                            <p class="title is-1 is-size-2-mobile mb-2">{{ shared_items_count }}</p>
+                            <p class="subtitle is-6 has-text-grey">Items Shared</p>
+                        </div>
+                    </div>
+                    
+                    <div class="column is-narrow is-hidden-mobile">
+                        <div class="is-flex is-align-items-center has-text-grey px-4" style="height: 60px;">
+                            <i class="fas fa-circle" style="font-size: 0.5rem;"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="column is-narrow has-text-centered">
+                        <div class="px-4">
+                            <p class="title is-1 is-size-2-mobile mb-2">{{ shared_subscriptions_count }}</p>
+                            <p class="subtitle is-6 has-text-grey">Subscriptions Shared</p>
+                        </div>
                     </div>
                 </div>
             </div>
 
             <div class="content">
                 <h2 class="title is-4">Community Members</h2>
-                <div class="columns is-multiline is-mobile">
+                <div class="columns is-multiline is-variable is-2">
                     {% for member in members %}
-                        <div class="column is-one-quarter-tablet is-half-mobile is-one-fifth-desktop">
-                            <div class="card">
-                                <div class="card-image">
-                                    <figure class="image is-128x128 mx-auto mt-4">
-                                        <img src="{{ member.profile_picture }}"
-                                             alt="{{ member.username }}">
+                        <div class="column is-one-third">
+                            <div class="box p-3 has-background-white">
+                                <div class="is-flex is-align-items-center">
+                                    <figure class="image is-64x64 mr-3">
+                                        <img class="is-rounded" src="{{ member.profile_picture }}" alt="{{ member.username }}">
                                     </figure>
-                                </div>
-                                <div class="card-content has-text-centered">
-                                    <p class="title is-6">{{ member.username }}</p>
+                                    <div>
+                                        <h3 class="title is-5 mb-1">{{ member.username | title }}</h3>
+                                        <span class="tag is-info is-light">Member</span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
