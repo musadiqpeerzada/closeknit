@@ -1,5 +1,6 @@
 # Use an official Python runtime as a parent image
 FROM python:3.12-slim
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 
 # Set environment variables
 ENV PYTHONDONTWRITEBYTECODE=1
@@ -11,15 +12,14 @@ ENV SECRET_KEY=${SECRET_KEY}
 # Set work directory
 WORKDIR /app
 
-# Install Python dependencies
-COPY requirements.txt /app/
-RUN pip install --upgrade pip && pip install -r requirements.txt
-
 # Copy project
 COPY . /app/
 
+# Install dependencies
+RUN uv sync --frozen
+
 # Collect static files
-RUN python manage.py collectstatic --noinput
+RUN uv run python manage.py collectstatic --noinput
 
 # Run gunicorn
-CMD ["gunicorn", "--bind", "0.0.0.0:8000", "closeknit.wsgi:application"]
+CMD ["uv", "run", "gunicorn", "--bind", "0.0.0.0:8000", "closeknit.wsgi:application"]
