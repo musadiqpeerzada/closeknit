@@ -4,7 +4,7 @@
     <section class="section">
         <div>
 
-            <div class="level is-mobile">
+            <div class="level">
                 <div class="level-left">
                     <div class="level-item">
                         <h1 class="title">Items</h1>
@@ -12,12 +12,18 @@
                 </div>
                 <div class="level-right">
                     <div class="level-item">
-                        <div class="buttons">
-                            <a href="{% url 'item_add' %}" class="button is-primary">
-                                <span>+</span>
+                        <div class="is-flex is-gap-2">
+                            <a href="{% url 'item_add' %}" class="button is-primary is-light">
+                                <span class="icon">
+                                    <i class="fas fa-plus"></i>
+                                </span>
+                                <span>New Item</span>
                             </a>
-                            <a href="{% url 'lease_add' %}" class="button is-link ml-2">
-                                <span>Record a lend</span>
+                            <a href="{% url 'lease_add' %}" class="button is-info is-light">
+                                <span class="icon">
+                                    <i class="fas fa-handshake"></i>
+                                </span>
+                                <span>Record Lend</span>
                             </a>
                         </div>
                     </div>

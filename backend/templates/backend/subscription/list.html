@@ -4,15 +4,22 @@
     <div>
         <section class="section">
 
-            <div class="level is-mobile">
+            <div class="level">
                 <div class="level-left">
                     <div class="level-item">
-                        <h2 class="title is-3">Subscriptions</h2>
+                        <h1 class="title">Subscriptions</h1>
                     </div>
                 </div>
                 <div class="level-right">
                     <div class="level-item">
-                        <a href="{% url 'subscription_add' %}" class="button is-primary"><span>+</span></a>
+                        <div class="is-flex is-gap-2">
+                            <a href="{% url 'subscription_add' %}" class="button is-primary is-light">
+                                <span class="icon">
+                                    <i class="fas fa-plus"></i>
+                                </span>
+                                <span>New Subscription</span>
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
