@@ -343,9 +343,43 @@ class RequestCreateView(generic.CreateView):
     form_class = RequestCreateForm
     success_url = reverse_lazy("index")
 
+    def get_form(self, *args, **kwargs):
+        form = super().get_form(*args, **kwargs)
+        form.fields["shared_with"].queryset = Community.objects.filter(
+            members=self.request.user
+        )
+        return form
+
     def form_valid(self, form):
         form.instance.owner = self.request.user
         return super().form_valid(form)
+
+
+class RequestUpdateView(generic.UpdateView):
+    template_name = "backend/request/cud.html"
+    model = Request
+    form_class = RequestCreateForm
+    success_url = reverse_lazy("request_list")
+
+    def get_queryset(self):
+        return Request.objects.filter(owner=self.request.user)
+
+
+class RequestDeleteView(generic.DeleteView):
+    template_name = "backend/request/cud.html"
+    model = Request
+    success_url = reverse_lazy("request_list")
+
+    def get_queryset(self):
+        return Request.objects.filter(owner=self.request.user)
+
+
+@login_required
+def request_detail_view(request, pk):
+    request_obj = get_object_or_404(Request, pk=pk)
+    if request_obj.owner != request.user:
+        return HttpResponseBadRequest("You do not have access to this request")
+    return render(request, "backend/request/detail.html", {"request": request_obj})
 
 
 def accept_invite(request, token):
