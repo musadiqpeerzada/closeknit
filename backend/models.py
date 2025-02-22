@@ -106,3 +106,28 @@ class Lease(models.Model):
 @receiver(pre_save, sender=Lease)
 def pre_save_lease(sender, instance, **kwargs):
     instance.clean()
+
+
+class Request(models.Model):
+    ITEM = "item"
+    SUBSCRIPTION = "subscription"
+    REQUEST_TYPE_CHOICES = [
+        (ITEM, "Item"),
+        (SUBSCRIPTION, "Subscription"),
+    ]
+
+    name = models.CharField(max_length=100)
+    request_type = models.CharField(
+        max_length=20,
+        choices=REQUEST_TYPE_CHOICES,
+        default=ITEM,
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    is_active = models.BooleanField(default=True)
+    owner = models.ForeignKey("auth.User", on_delete=models.CASCADE)
+    shared_with = models.ManyToManyField(
+        Community, related_name="shared_requests", blank=True
+    )
+
+    def __str__(self):
+        return self.name

@@ -120,6 +120,32 @@ urlpatterns = [
         login_required(views.LeaseDeleteView.as_view(extra_context={"view": "delete"})),
         name="lease_delete",
     ),
-    #     invite endpoints
+    # requests
+    path(
+        "requests/list",
+        login_required(views.RequestListView.as_view()),
+        name="request_list",
+    ),
+    path(
+        "requests/add",
+        login_required(views.RequestCreateView.as_view(extra_context={"view": "add"})),
+        name="request_add",
+    ),
+    path(
+        "requests/<int:pk>",
+        views.request_detail_view,
+        name="request_detail",
+    ),
+    path(
+        "requests/<int:pk>/update",
+        login_required(views.RequestUpdateView.as_view(extra_context={"view": "update"})),
+        name="request_update",
+    ),
+    path(
+        "requests/<int:pk>/delete",
+        login_required(views.RequestDeleteView.as_view(extra_context={"view": "delete"})),
+        name="request_delete",
+    ),
+    # invite endpoints
     path("invite/<uuid:token>/", views.accept_invite, name="accept_invite"),
 ]
