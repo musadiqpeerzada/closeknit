@@ -31,6 +31,7 @@ from backend.services import (
     get_data_for_community_detail,
     get_items_available_for_lease,
     get_subscriptions_available_for_share,
+    get_requests_for_user,
 )
 
 
@@ -380,6 +381,14 @@ def request_detail_view(request, pk):
     if request_obj.owner != request.user:
         return HttpResponseBadRequest("You do not have access to this request")
     return render(request, "backend/request/detail.html", {"request": request_obj})
+
+
+class RequestListView(generic.ListView):
+    template_name = "backend/request/list.html"
+    context_object_name = "requests"
+
+    def get_queryset(self):
+        return get_requests_for_user(self.request.user)
 
 
 def accept_invite(request, token):
