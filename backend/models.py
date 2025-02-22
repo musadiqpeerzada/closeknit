@@ -106,3 +106,23 @@ class Lease(models.Model):
 @receiver(pre_save, sender=Lease)
 def pre_save_lease(sender, instance, **kwargs):
     instance.clean()
+
+
+class ItemRequest(models.Model):
+    item = models.ForeignKey(Item, on_delete=models.CASCADE)
+    requester = models.ForeignKey("auth.User", on_delete=models.CASCADE)
+    message = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Request for {self.item.name} by {self.requester.username}"
+
+
+class SubscriptionRequest(models.Model):
+    subscription = models.ForeignKey(Subscription, on_delete=models.CASCADE)
+    requester = models.ForeignKey("auth.User", on_delete=models.CASCADE)
+    message = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Request for {self.subscription.name} by {self.requester.username}"

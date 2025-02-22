@@ -75,3 +75,11 @@ class ItemUpdateForm(forms.ModelForm):
     class Meta:
         model = Item
         fields = ["name", "is_active", "item_type", "shared_with"]
+
+
+class ItemRequestForm(forms.Form):
+    message = forms.CharField(widget=forms.Textarea, label="Request Message")
+
+
+class SubscriptionRequestForm(forms.Form):
+    message = forms.CharField(widget=forms.Textarea, label="Request Message")
