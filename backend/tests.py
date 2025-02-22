@@ -249,6 +249,26 @@ class RequestCompletionTest(TestCase):
         self.assertNotContains(response, "Request 1")
         self.assertContains(response, "Request 2")
 
+    def test_toggle_is_completed(self):
+        self.client.login(username="user1", password="password1")
+        response = self.client.post(reverse("request_update", args=[self.request1.pk]), {
+            "name": self.request1.name,
+            "request_type": self.request1.request_type,
+            "is_completed": True,
+        })
+        self.assertEqual(response.status_code, 302)  # Redirect after successful update
+        self.request1.refresh_from_db()
+        self.assertTrue(self.request1.is_completed)
+
+        response = self.client.post(reverse("request_update", args=[self.request1.pk]), {
+            "name": self.request1.name,
+            "request_type": self.request1.request_type,
+            "is_completed": False,
+        })
+        self.assertEqual(response.status_code, 302)  # Redirect after successful update
+        self.request1.refresh_from_db()
+        self.assertFalse(self.request1.is_completed)
+
     def tearDown(self):
         Request.objects.all().delete()
         Community.objects.all().delete()

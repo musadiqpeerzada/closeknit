@@ -372,6 +372,10 @@ class RequestUpdateView(RequestBaseView , generic.UpdateView):
     def get_queryset(self):
         return Request.objects.filter(owner=self.request.user)
 
+    def form_valid(self, form):
+        form.instance.is_completed = form.cleaned_data.get("is_completed", False)
+        return super().form_valid(form)
+
 
 class RequestDeleteView(generic.DeleteView):
     template_name = "backend/request/cud.html"
