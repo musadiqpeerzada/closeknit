@@ -124,6 +124,7 @@ class Request(models.Model):
     )
     created_at = models.DateTimeField(auto_now_add=True)
     is_active = models.BooleanField(default=True)
+    is_completed = models.BooleanField(default=False)
     owner = models.ForeignKey("auth.User", on_delete=models.CASCADE)
     shared_with = models.ManyToManyField(
         Community, related_name="shared_requests", blank=True
