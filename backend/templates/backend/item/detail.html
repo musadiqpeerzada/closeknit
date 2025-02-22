@@ -41,6 +41,14 @@
                         </div>
                     </div>
                 </section>
+                <section class="py-4">
+                    <p class="title is-4">Request this item</p>
+                    <form method="post" action="{% url 'item_request' item.pk %}">
+                        {% csrf_token %}
+                        {{ form.as_p }}
+                        <button type="submit" class="button is-primary">Request</button>
+                    </form>
+                </section>
             {% endif %}
         </div>
     </section>

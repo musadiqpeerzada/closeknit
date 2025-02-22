@@ -78,6 +78,11 @@ urlpatterns = [
         ),
         name="subscription_delete",
     ),
+    path(
+        "subscriptions/<int:pk>/request",
+        login_required(views.SubscriptionRequestView.as_view()),
+        name="subscription_request",
+    ),
     # items
     path(
         "items/list",
@@ -103,6 +108,11 @@ urlpatterns = [
         "items/<int:pk>/delete",
         login_required(views.ItemDeleteView.as_view(extra_context={"view": "delete"})),
         name="item_delete",
+    ),
+    path(
+        "items/<int:pk>/request",
+        login_required(views.ItemRequestView.as_view()),
+        name="item_request",
     ),
     # leases
     path(

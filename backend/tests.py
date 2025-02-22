@@ -4,8 +4,10 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.test import TestCase
 from django.utils import timezone
+from django.urls import reverse
+from django.test import Client
 
-from backend.models import Community, Item, Subscription, Lease
+from backend.models import Community, Item, Subscription, Lease, ItemRequest, SubscriptionRequest
 from backend.services import (
     get_items_available_for_lease,
     get_subscriptions_available_for_share,
@@ -112,4 +114,48 @@ class LeaseE2ETest(TestCase):
         Lease.objects.all().delete()
         Item.objects.all().delete()
         self.community.delete()
+        User.objects.all().delete()
+
+
+class ItemRequestTest(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.user1 = User.objects.create_user(username="user1", password="password1")
+        self.user2 = User.objects.create_user(username="user2", password="password2")
+        self.item = Item.objects.create(name="Test Item", owner=self.user1)
+
+    def test_item_request(self):
+        self.client.login(username="user2", password="password2")
+        response = self.client.post(
+            reverse("item_request", kwargs={"pk": self.item.pk}),
+            {"message": "Can I borrow this item?"},
+        )
+        self.assertEqual(response.status_code, 302)
+        self.assertTrue(ItemRequest.objects.filter(item=self.item, requester=self.user2).exists())
+
+    def tearDown(self):
+        ItemRequest.objects.all().delete()
+        Item.objects.all().delete()
+        User.objects.all().delete()
+
+
+class SubscriptionRequestTest(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.user1 = User.objects.create_user(username="user1", password="password1")
+        self.user2 = User.objects.create_user(username="user2", password="password2")
+        self.subscription = Subscription.objects.create(name="Test Subscription", owner=self.user1)
+
+    def test_subscription_request(self):
+        self.client.login(username="user2", password="password2")
+        response = self.client.post(
+            reverse("subscription_request", kwargs={"pk": self.subscription.pk}),
+            {"message": "Can you share this subscription?"},
+        )
+        self.assertEqual(response.status_code, 302)
+        self.assertTrue(SubscriptionRequest.objects.filter(subscription=self.subscription, requester=self.user2).exists())
+
+    def tearDown(self):
+        SubscriptionRequest.objects.all().delete()
+        Subscription.objects.all().delete()
         User.objects.all().delete()
