@@ -378,7 +378,7 @@ class RequestDeleteView(generic.DeleteView):
 @login_required
 def request_detail_view(request, pk):
     request_obj = get_object_or_404(Request, pk=pk)
-    if request_obj.owner != request.user:
+    if request_obj.owner != request.user and request_obj not in get_requests_for_user(request.user):
         return HttpResponseBadRequest("You do not have access to this request")
     return render(request, "backend/request/detail.html", {"request": request_obj})
 
@@ -388,7 +388,10 @@ class RequestListView(generic.ListView):
     context_object_name = "requests"
 
     def get_queryset(self):
-        return get_requests_for_user(self.request.user)
+        return {
+            "discover": get_requests_for_user(self.request.user),
+            "owned": Request.objects.filter(owner=self.request.user),
+        }
 
 
 def accept_invite(request, token):

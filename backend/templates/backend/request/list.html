@@ -21,38 +21,18 @@
                 </div>
             </div>
 
-            {% if requests %}
-                <div class="columns is-multiline is-variable is-2">
-                    {% for request in requests %}
-                        <div class="column is-one-third">
-                            <div class="box p-3 has-background-white">
-                                <a href="{% url 'request_detail' request.pk %}" class="has-text-dark">
-                                    <h3 class="title is-5 mb-2">{{ request.name|title }}</h3>
-                                    <p class="is-size-7 has-text-grey">Requested by {{ request.owner|title }}</p>
-                                    <div class="is-flex is-justify-content-space-between is-align-items-center mt-2">
-                                        <span class="tag is-info is-light is-uppercase">
-                                            {{ request.request_type }}
-                                        </span>
-                                        <div class="is-flex is-gap-2">
-                                            <a href="{% url 'request_update' request.pk %}" class="button is-small is-info is-light">
-                                                <span class="icon">
-                                                    <i class="fas fa-edit"></i>
-                                                </span>
-                                            </a>
-                                            <a href="{% url 'request_delete' request.pk %}" class="button is-small is-danger is-light">
-                                                <span class="icon">
-                                                    <i class="fas fa-trash"></i>
-                                                </span>
-                                            </a>
-                                        </div>
-                                    </div>
-                                </a>
-                            </div>
-                        </div>
-                    {% endfor %}
-                </div>
-            {% else %}
-                <p>No requests available.</p>
+            {% if requests.discover %}
+             <section class="pt-4">
+                    <h2 class="title is-4">From your community</h2>
+                    {% include 'backend/_partials/request_listing.html' with requests=requests.discover user=user %}
+                </section>
+            {% endif %}
+
+            {% if requests.owned %}
+                <section class="pt-4">
+                    <h2 class="title is-4">Yours</h2>
+                    {% include 'backend/_partials/request_listing.html' with requests=requests.owned user=user %}
+                </section>
             {% endif %}
         </div>
     </section>
