@@ -338,12 +338,7 @@ class LeaseDeleteView(generic.DeleteView):
         return Lease.objects.filter(item__owner=self.request.user)
 
 
-class RequestCreateView(generic.CreateView):
-    template_name = "backend/request/cud.html"
-    model = Request
-    form_class = RequestCreateForm
-    success_url = reverse_lazy("index")
-
+class RequestBaseView(generic.View):
     def get_form(self, *args, **kwargs):
         form = super().get_form(*args, **kwargs)
         form.fields["shared_with"].queryset = Community.objects.filter(
@@ -351,12 +346,23 @@ class RequestCreateView(generic.CreateView):
         )
         return form
 
+class RequestCreateView(RequestBaseView, generic.CreateView):
+    template_name = "backend/request/cud.html"
+    model = Request
+    form_class = RequestCreateForm
+    success_url = reverse_lazy("request_list")
+
     def form_valid(self, form):
         form.instance.owner = self.request.user
         return super().form_valid(form)
 
 
-class RequestUpdateView(generic.UpdateView):
+class RequestUpdateView(RequestBaseView , generic.UpdateView):
+    shared_with = forms.ModelMultipleChoiceField(
+        queryset=Community.objects.none(),
+        required=False,
+        widget=forms.CheckboxSelectMultiple,
+    )
     template_name = "backend/request/cud.html"
     model = Request
     form_class = RequestCreateForm
