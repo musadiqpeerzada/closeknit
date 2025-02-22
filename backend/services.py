@@ -33,7 +33,7 @@ def get_items_available_for_lease(user: User) -> QuerySet[Item]:
     )
     return items_shared_to_communities_the_user_belongs_to.exclude(owner=user).exclude(
         pk__in=[lease.item.pk for lease in items_already_leased_out]
-    )
+    ).distinct()
 
 
 def get_subscriptions_available_for_share(user: User) -> QuerySet[Subscription]:
