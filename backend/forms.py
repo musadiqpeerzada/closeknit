@@ -87,3 +87,9 @@ class RequestCreateForm(forms.ModelForm):
     class Meta:
         model = Request
         fields = ["name", "request_type", "shared_with"]
+
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user', None)
+        super().__init__(*args, **kwargs)
+        if user:
+            self.fields['shared_with'].queryset = Community.objects.filter(members=user)
