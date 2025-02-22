@@ -15,10 +15,8 @@ from backend.forms import (
     UpdateCommunityMembersForm,
     ItemCreateForm,
     ItemUpdateForm,
-    ItemRequestForm,
-    SubscriptionRequestForm,
 )
-from backend.models import Subscription, Community, Item, Lease, ItemRequest, SubscriptionRequest
+from backend.models import Subscription, Community, Item, Lease
 from backend.services import (
     get_user,
     get_all_users_from_communities_the_user_belongs_to,
@@ -354,31 +352,3 @@ def accept_invite(request, token):
         return redirect(
             f"/accounts/google/login/?process=login&next={reverse('accept_invite', args=[token])}"
         )
-
-
-class ItemRequestView(generic.CreateView):
-    model = ItemRequest
-    form_class = ItemRequestForm
-    template_name = "backend/item/request.html"
-
-    def form_valid(self, form):
-        form.instance.requester = self.request.user
-        form.instance.item = get_object_or_404(Item, pk=self.kwargs["pk"])
-        return super().form_valid(form)
-
-    def get_success_url(self):
-        return reverse("item_detail", kwargs={"pk": self.object.item.pk})
-
-
-class SubscriptionRequestView(generic.CreateView):
-    model = SubscriptionRequest
-    form_class = SubscriptionRequestForm
-    template_name = "backend/subscription/request.html"
-
-    def form_valid(self, form):
-        form.instance.requester = self.request.user
-        form.instance.subscription = get_object_or_404(Subscription, pk=self.kwargs["pk"])
-        return super().form_valid(form)
-
-    def get_success_url(self):
-        return reverse("subscription_detail", kwargs={"pk": self.object.subscription.pk})
