@@ -207,3 +207,49 @@ class RequestListViewTest(TestCase):
         Request.objects.all().delete()
         Community.objects.all().delete()
         User.objects.all().delete()
+
+
+class RequestCompletionTest(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.user1 = User.objects.create_user(username="user1", password="password1")
+        self.user2 = User.objects.create_user(username="user2", password="password2")
+        self.community = Community.objects.create(name="Test Community", owner=self.user1)
+        self.community.members.add(self.user1, self.user2)
+        self.request1 = Request.objects.create(name="Request 1", request_type=Request.ITEM, owner=self.user1)
+        self.request2 = Request.objects.create(name="Request 2", request_type=Request.SUBSCRIPTION, owner=self.user2)
+        self.request1.shared_with.add(self.community)
+        self.request2.shared_with.add(self.community)
+
+    def test_only_owner_can_mark_completed(self):
+        self.client.login(username="user2", password="password2")
+        response = self.client.post(reverse("request_update", args=[self.request1.pk]), {
+            "name": self.request1.name,
+            "request_type": self.request1.request_type,
+            "is_completed": True,
+        })
+        self.assertEqual(response.status_code, 403)  # Forbidden
+
+        self.client.login(username="user1", password="password1")
+        response = self.client.post(reverse("request_update", args=[self.request1.pk]), {
+            "name": self.request1.name,
+            "request_type": self.request1.request_type,
+            "is_completed": True,
+        })
+        self.assertEqual(response.status_code, 302)  # Redirect after successful update
+        self.request1.refresh_from_db()
+        self.assertTrue(self.request1.is_completed)
+
+    def test_completed_requests_not_visible_to_others(self):
+        self.request1.is_completed = True
+        self.request1.save()
+
+        self.client.login(username="user2", password="password2")
+        response = self.client.get(reverse("request_list"))
+        self.assertNotContains(response, "Request 1")
+        self.assertContains(response, "Request 2")
+
+    def tearDown(self):
+        Request.objects.all().delete()
+        Community.objects.all().delete()
+        User.objects.all().delete()

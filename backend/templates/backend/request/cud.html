@@ -15,6 +15,13 @@
                 <h1 class="title is-3">Update Request</h1>
                 <form method="post" class="form">{% csrf_token %}
                     {{ form|crispy }}
+                    <div class="field">
+                        <div class="control">
+                            <label class="checkbox">
+                                {{ form.is_completed }} Mark as completed
+                            </label>
+                        </div>
+                    </div>
                     <button type="submit" class="button is-info">Save</button>
                 </form>
             {% elif view == 'delete' %}

@@ -93,3 +93,21 @@ class RequestCreateForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         if user:
             self.fields['shared_with'].queryset = Community.objects.filter(members=user)
+
+
+class RequestUpdateForm(forms.ModelForm):
+    shared_with = forms.ModelMultipleChoiceField(
+        queryset=Community.objects.none(),
+        required=False,
+        widget=forms.CheckboxSelectMultiple,
+    )
+
+    class Meta:
+        model = Request
+        fields = ["name", "request_type", "is_completed", "shared_with"]
+
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user', None)
+        super().__init__(*args, **kwargs)
+        if user:
+            self.fields['shared_with'].queryset = Community.objects.filter(members=user)

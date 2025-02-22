@@ -16,6 +16,7 @@ from backend.forms import (
     ItemCreateForm,
     ItemUpdateForm,
     RequestCreateForm,
+    RequestUpdateForm,
 )
 from backend.models import Subscription, Community, Item, Lease, Request
 from backend.services import (
@@ -365,7 +366,7 @@ class RequestUpdateView(RequestBaseView , generic.UpdateView):
     )
     template_name = "backend/request/cud.html"
     model = Request
-    form_class = RequestCreateForm
+    form_class = RequestUpdateForm
     success_url = reverse_lazy("request_list")
 
     def get_queryset(self):
@@ -395,7 +396,7 @@ class RequestListView(generic.ListView):
 
     def get_queryset(self):
         return {
-            "discover": get_requests_for_user(self.request.user),
+            "discover": get_requests_for_user(self.request.user).filter(is_completed=False),
             "owned": Request.objects.filter(owner=self.request.user),
         }
 
