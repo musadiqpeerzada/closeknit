@@ -15,8 +15,9 @@ from backend.forms import (
     UpdateCommunityMembersForm,
     ItemCreateForm,
     ItemUpdateForm,
+    RequestCreateForm,
 )
-from backend.models import Subscription, Community, Item, Lease
+from backend.models import Subscription, Community, Item, Lease, Request
 from backend.services import (
     get_user,
     get_all_users_from_communities_the_user_belongs_to,
@@ -48,6 +49,7 @@ def index_view(request):
         return render(request, "backend/index.html")
 
     dashboard_data = get_dashboard_data(request.user)
+    dashboard_data["requests"] = Request.objects.filter(owner=request.user)
     return render(request, "backend/index.html", dashboard_data)
 
 
@@ -333,6 +335,17 @@ class LeaseDeleteView(generic.DeleteView):
 
     def get_queryset(self):
         return Lease.objects.filter(item__owner=self.request.user)
+
+
+class RequestCreateView(generic.CreateView):
+    template_name = "backend/request/cud.html"
+    model = Request
+    form_class = RequestCreateForm
+    success_url = reverse_lazy("index")
+
+    def form_valid(self, form):
+        form.instance.owner = self.request.user
+        return super().form_valid(form)
 
 
 def accept_invite(request, token):
