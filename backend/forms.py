@@ -89,7 +89,7 @@ class RequestCreateForm(forms.ModelForm):
         fields = ["name", "request_type", "shared_with"]
 
     def __init__(self, *args, **kwargs):
-        user = kwargs.pop('user', None)
+        user = kwargs.get('user', None)
         super().__init__(*args, **kwargs)
         if user:
             self.fields['shared_with'].queryset = Community.objects.filter(members=user)
@@ -107,7 +107,7 @@ class RequestUpdateForm(forms.ModelForm):
         fields = ["name", "request_type", "is_completed", "shared_with"]
 
     def __init__(self, *args, **kwargs):
-        user = kwargs.pop('user', None)
+        user = kwargs.get('user', None)
         super().__init__(*args, **kwargs)
         if user:
             self.fields['shared_with'].queryset = Community.objects.filter(members=user)

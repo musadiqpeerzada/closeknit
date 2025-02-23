@@ -399,9 +399,15 @@ class RequestListView(generic.ListView):
     context_object_name = "requests"
 
     def get_queryset(self):
+        owned = Request.objects.filter(owner=self.request.user)
+        completed = owned.filter(is_completed=True)
+        pending = owned.filter(is_completed=False)
         return {
             "discover": get_requests_for_user(self.request.user).filter(is_completed=False),
-            "owned": Request.objects.filter(owner=self.request.user),
+            "owned": {
+                "completed": completed,
+                "pending": pending,
+            },
         }
 
 
