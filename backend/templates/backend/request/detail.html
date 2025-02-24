@@ -1,0 +1,63 @@
+{% extends "backend/base.html" %}
+{% load static %}
+
+{% block content %}
+    <section class="section">
+        <div class="container">
+            <div class="level">
+                <div class="level-left">
+                    <div class="level-item">
+                        <h1 class="title">{{ request.name }}</h1>
+                    </div>
+                </div>
+                <div class="level-right">
+                    {% if request.owner == user %}
+                        <div class="level-item">
+                            <div class="buttons">
+                                <a href="{% url 'request_update' request.pk %}" class="button is-primary">Update</a>
+                                <a href="{% url 'request_delete' request.pk %}" class="button is-danger">Delete</a>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <p class="subtitle">Requested by: {{ request.owner.username }}</p>
+
+            {% if request.owner != user %}
+                <section class="py-4">
+                    <p class="title is-4">Want to Lend?</p>
+                    <div class="box">
+                        <div class="columns is-vcentered">
+                            <div class="column">
+                                <p class="is-size-5">Hi {{ request.owner.username }}, I saw your request for {{ request.name }} through Closeknit and would lend it. Let me know if it is possible!</p>
+                            </div>
+                            <div class="column is-narrow">
+                                <button class="button is-info js-share-button">
+                                    <span>Message {{ request.owner.username|title }}!</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            {% endif %}
+        </div>
+    </section>
+
+    {% if request.owner != user %}
+        <script>
+            document.querySelector('.js-share-button').addEventListener('click', function () {
+                if (navigator.share) {
+                    navigator.share({
+                        title: 'Fulfill Request for {{ request.name }}',
+                        text: 'Hi {{ request.owner.username|title }}, I saw your request for {{ request.name }} through Closeknit and would like to fulfill it. Let me know if it is possible!',
+                        url: window.location.href
+                    }).then(() => console.log('Share successful'))
+                        .catch((error) => console.log('Error sharing:', error));
+                } else {
+                    alert('Web Share API not supported on this browser. Please copy the URL and send it manually.');
+                }
+            });
+        </script>
+    {% endif %}
+{% endblock %}

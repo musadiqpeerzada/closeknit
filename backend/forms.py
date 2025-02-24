@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 
-from backend.models import Community, Subscription, Item
+from backend.models import Community, Subscription, Item, Request
 
 
 class RegistrationForm(UserCreationForm):
@@ -75,3 +75,39 @@ class ItemUpdateForm(forms.ModelForm):
     class Meta:
         model = Item
         fields = ["name", "is_active", "item_type", "shared_with"]
+
+
+class RequestCreateForm(forms.ModelForm):
+    shared_with = forms.ModelMultipleChoiceField(
+        queryset=Community.objects.none(),
+        required=False,
+        widget=forms.CheckboxSelectMultiple,
+    )
+
+    class Meta:
+        model = Request
+        fields = ["name", "request_type", "shared_with"]
+
+    def __init__(self, *args, **kwargs):
+        user = kwargs.get('user', None)
+        super().__init__(*args, **kwargs)
+        if user:
+            self.fields['shared_with'].queryset = Community.objects.filter(members=user)
+
+
+class RequestUpdateForm(forms.ModelForm):
+    shared_with = forms.ModelMultipleChoiceField(
+        queryset=Community.objects.none(),
+        required=False,
+        widget=forms.CheckboxSelectMultiple,
+    )
+
+    class Meta:
+        model = Request
+        fields = ["name", "request_type", "is_completed", "shared_with"]
+
+    def __init__(self, *args, **kwargs):
+        user = kwargs.get('user', None)
+        super().__init__(*args, **kwargs)
+        if user:
+            self.fields['shared_with'].queryset = Community.objects.filter(members=user)

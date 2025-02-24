@@ -15,8 +15,10 @@ from backend.forms import (
     UpdateCommunityMembersForm,
     ItemCreateForm,
     ItemUpdateForm,
+    RequestCreateForm,
+    RequestUpdateForm,
 )
-from backend.models import Subscription, Community, Item, Lease
+from backend.models import Subscription, Community, Item, Lease, Request
 from backend.services import (
     get_user,
     get_all_users_from_communities_the_user_belongs_to,
@@ -30,6 +32,7 @@ from backend.services import (
     get_data_for_community_detail,
     get_items_available_for_lease,
     get_subscriptions_available_for_share,
+    get_requests_for_user,
 )
 
 
@@ -48,6 +51,7 @@ def index_view(request):
         return render(request, "backend/index.html")
 
     dashboard_data = get_dashboard_data(request.user)
+    dashboard_data["requests"] = Request.objects.filter(owner=request.user)
     return render(request, "backend/index.html", dashboard_data)
 
 
@@ -333,6 +337,78 @@ class LeaseDeleteView(generic.DeleteView):
 
     def get_queryset(self):
         return Lease.objects.filter(item__owner=self.request.user)
+
+
+class RequestBaseView(generic.View):
+    def get_form(self, *args, **kwargs):
+        form = super().get_form(*args, **kwargs)
+        form.fields["shared_with"].queryset = Community.objects.filter(
+            members=self.request.user
+        )
+        return form
+
+class RequestCreateView(RequestBaseView, generic.CreateView):
+    template_name = "backend/request/cud.html"
+    model = Request
+    form_class = RequestCreateForm
+    success_url = reverse_lazy("request_list")
+
+    def form_valid(self, form):
+        form.instance.owner = self.request.user
+        return super().form_valid(form)
+
+
+class RequestUpdateView(RequestBaseView , generic.UpdateView):
+    shared_with = forms.ModelMultipleChoiceField(
+        queryset=Community.objects.none(),
+        required=False,
+        widget=forms.CheckboxSelectMultiple,
+    )
+    template_name = "backend/request/cud.html"
+    model = Request
+    form_class = RequestUpdateForm
+    success_url = reverse_lazy("request_list")
+
+    def get_queryset(self):
+        return Request.objects.filter(owner=self.request.user)
+
+    def form_valid(self, form):
+        form.instance.is_completed = form.cleaned_data.get("is_completed", False)
+        return super().form_valid(form)
+
+
+class RequestDeleteView(generic.DeleteView):
+    template_name = "backend/request/cud.html"
+    model = Request
+    success_url = reverse_lazy("request_list")
+
+    def get_queryset(self):
+        return Request.objects.filter(owner=self.request.user)
+
+
+@login_required
+def request_detail_view(request, pk):
+    request_obj = get_object_or_404(Request, pk=pk)
+    if request_obj.owner != request.user and request_obj not in get_requests_for_user(request.user):
+        return HttpResponseBadRequest("You do not have access to this request")
+    return render(request, "backend/request/detail.html", {"request": request_obj})
+
+
+class RequestListView(generic.ListView):
+    template_name = "backend/request/list.html"
+    context_object_name = "requests"
+
+    def get_queryset(self):
+        owned = Request.objects.filter(owner=self.request.user)
+        completed = owned.filter(is_completed=True)
+        pending = owned.filter(is_completed=False)
+        return {
+            "discover": get_requests_for_user(self.request.user).filter(is_completed=False),
+            "owned": {
+                "completed": completed,
+                "pending": pending,
+            },
+        }
 
 
 def accept_invite(request, token):

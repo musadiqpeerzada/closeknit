@@ -1,0 +1,58 @@
+{% extends 'backend/base.html' %}
+
+{% block content %}
+    <section class="section">
+        <div class="container">
+            <div class="level">
+                <div class="level-left">
+                    <div class="level-item">
+                        <h1 class="title">Requests</h1>
+                    </div>
+                </div>
+                <div class="level-right">
+                    <div class="level-item">
+                        <a href="{% url 'request_add' %}" class="button is-primary is-light">
+                            <span class="icon">
+                                <i class="fas fa-plus"></i>
+                            </span>
+                            <span>New Request</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            {% if requests.discover %}
+             <section class="pt-4">
+                    <h2 class="title is-4">From your community</h2>
+                    {% include 'backend/_partials/request_listing.html' with requests=requests.discover user=user %}
+                </section>
+            {% endif %}
+
+            {% if requests.owned %}
+                <section class="pt-4">
+                    <h2 class="title is-4">Yours</h2>
+                    
+                    {# Pending Requests #}
+                    <div class="mb-5">
+                        <h3 class="title is-5 mb-3">Pending</h3>
+                        {% if requests.owned.pending %}
+                            {% include 'backend/_partials/request_listing.html' with requests=requests.owned.pending user=user %}
+                        {% else %}
+                            <p class="has-text-grey">No pending requests</p>
+                        {% endif %}
+                    </div>
+
+                    {# Completed Requests #}
+                    <div>
+                        <h3 class="title is-5 mb-3">Completed</h3>
+                        {% if requests.owned.completed %}
+                            {% include 'backend/_partials/request_listing.html' with requests=requests.owned.completed user=user %}
+                        {% else %}
+                            <p class="has-text-grey">No completed requests</p>
+                        {% endif %}
+                    </div>
+                </section>
+            {% endif %}
+        </div>
+    </section>
+{% endblock %}
