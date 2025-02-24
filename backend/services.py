@@ -40,7 +40,7 @@ def get_requests_for_user(user: User) -> QuerySet[Request]:
     requests_shared_to_communities_the_user_belongs_to = Request.objects.filter(
         shared_with__in=communities_the_user_belongs_to
     )
-    return requests_shared_to_communities_the_user_belongs_to.exclude(owner=user)
+    return requests_shared_to_communities_the_user_belongs_to.exclude(owner=user).distinct()
 
 def get_subscriptions_available_for_share(user: User) -> QuerySet[Subscription]:
     communities_the_user_belongs_to = Community.objects.filter(members=user)
