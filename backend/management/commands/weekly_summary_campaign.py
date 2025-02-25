@@ -6,12 +6,13 @@ from django.conf import settings
 from django.core.mail import EmailMessage
 
 from backend.services import (
+    get_requests_for_user,
     get_subscriptions_available_for_share,
     get_items_available_for_lease,
 )
 
 
-def format_email_content(shared_items, shared_subscriptions):
+def format_email_content(shared_items, shared_subscriptions, shared_requests):
     closeknit_link = '<a href="https://closeknit.io">Closeknit</a>'
     content = f" We're thrilled to share some exciting updates from your {closeknit_link} community!<br><br>"
 
@@ -26,6 +27,11 @@ def format_email_content(shared_items, shared_subscriptions):
             content += (
                 f"- {subscription.name} (shared by {subscription.owner.username})<br>"
             )
+
+    if shared_requests:
+        content += "<h2>📢 Items and Subscriptions Requested by Your Community:</h2>"
+        for request in shared_requests:
+            content += f"- {request.name} (shared by {request.owner.username})<br>"
 
     content += """
 <br><br>Remember, sharing is caring! Feel free to reach out to members of your community if you'd like to borrow these items. It's a great way to connect with your neighbors and make the most of our shared resources.
@@ -52,12 +58,14 @@ class Command(BaseCommand):
             # Fetch subscriptions shared with the user in the last 7 days
             shared_subscriptions = get_subscriptions_available_for_share(user)
 
-            if shared_items or shared_subscriptions:
-                self.send_email(user, shared_items, shared_subscriptions)
+            shared_requests = get_requests_for_user(user)
 
-    def send_email(self, user, shared_items, shared_subscriptions):
+            if shared_items or shared_subscriptions or shared_requests:
+                self.send_email(user, shared_items, shared_subscriptions, shared_requests)
+
+    def send_email(self, user, shared_items, shared_subscriptions, shared_requests):
         subject = "Exciting Updates from Your Closeknit Community! 🎉"
-        message = format_email_content(shared_items, shared_subscriptions)
+        message = format_email_content(shared_items, shared_subscriptions, shared_requests)
         from_email = settings.DEFAULT_FROM_EMAIL
         recipient_list = [user.email]
 
