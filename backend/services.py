@@ -47,7 +47,7 @@ def get_subscriptions_available_for_share(user: User) -> QuerySet[Subscription]:
     subscriptions_shared_to_communities_the_user_belongs_to = (
         Subscription.objects.filter(shared_with__in=communities_the_user_belongs_to)
     )
-    return subscriptions_shared_to_communities_the_user_belongs_to.exclude(owner=user)
+    return subscriptions_shared_to_communities_the_user_belongs_to.exclude(owner=user).distinct()
 
 
 def get_dashboard_data(user: User) -> dict:
