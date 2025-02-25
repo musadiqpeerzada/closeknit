@@ -29,7 +29,7 @@ def format_email_content(shared_items, shared_subscriptions, shared_requests):
             )
 
     if shared_requests:
-        content += "<h2>📢 Requests shared with you:</h2>"
+        content += "<h2>📢 Items and Subscriptions Requested by Your Community:</h2>"
         for request in shared_requests:
             content += f"- {request.name} (shared by {request.owner.username})<br>"
 
