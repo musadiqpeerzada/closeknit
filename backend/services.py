@@ -35,12 +35,12 @@ def get_items_available_for_lease(user: User) -> QuerySet[Item]:
         pk__in=[lease.item.pk for lease in items_already_leased_out]
     ).distinct()
 
-def get_requests_for_user(user: User) -> QuerySet[Request]:
+def get_pending_requests_for_user(user: User) -> QuerySet[Request]:
     communities_the_user_belongs_to = Community.objects.filter(members=user)
     requests_shared_to_communities_the_user_belongs_to = Request.objects.filter(
         shared_with__in=communities_the_user_belongs_to
     )
-    return requests_shared_to_communities_the_user_belongs_to.exclude(owner=user).distinct()
+    return requests_shared_to_communities_the_user_belongs_to.exclude(owner=user).filter(is_completed=False).distinct()
 
 def get_subscriptions_available_for_share(user: User) -> QuerySet[Subscription]:
     communities_the_user_belongs_to = Community.objects.filter(members=user)

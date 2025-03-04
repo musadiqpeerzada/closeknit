@@ -32,7 +32,7 @@ from backend.services import (
     get_data_for_community_detail,
     get_items_available_for_lease,
     get_subscriptions_available_for_share,
-    get_requests_for_user,
+    get_pending_requests_for_user,
 )
 
 
@@ -403,7 +403,7 @@ class RequestListView(generic.ListView):
         completed = owned.filter(is_completed=True)
         pending = owned.filter(is_completed=False)
         return {
-            "discover": get_requests_for_user(self.request.user).filter(is_completed=False),
+            "discover": get_pending_requests_for_user(self.request.user),
             "owned": {
                 "completed": completed,
                 "pending": pending,
