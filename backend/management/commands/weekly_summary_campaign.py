@@ -6,7 +6,7 @@ from django.conf import settings
 from django.core.mail import EmailMessage
 
 from backend.services import (
-    get_requests_for_user,
+    get_pending_requests_for_user,
     get_subscriptions_available_for_share,
     get_items_available_for_lease,
 )
@@ -58,7 +58,7 @@ class Command(BaseCommand):
             # Fetch subscriptions shared with the user in the last 7 days
             shared_subscriptions = get_subscriptions_available_for_share(user)
 
-            shared_requests = get_requests_for_user(user)
+            shared_requests = get_pending_requests_for_user(user)
 
             if shared_items or shared_subscriptions or shared_requests:
                 self.send_email(user, shared_items, shared_subscriptions, shared_requests)
