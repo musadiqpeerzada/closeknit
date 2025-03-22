@@ -4,7 +4,7 @@
             <div class="box p-3 has-background-white">
                 <a href="{% url 'request_detail' request.pk %}" class="has-text-dark">
                     <h3 class="title is-5 mb-2">{{ request.name | title }}</h3>
-                    <p class="is-size-7 has-text-grey">Shared by {{ request.owner | title }}</p>
+                    <p class="is-size-7 has-text-grey">Requested by {{ request.owner | title }}</p>
                     <div class="is-flex is-justify-content-space-between is-align-requests-center mt-2">
                         <span class="tag is-info is-light is-uppercase">
                             {{ request.get_request_type_display }}
