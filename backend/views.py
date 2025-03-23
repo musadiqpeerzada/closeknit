@@ -389,7 +389,7 @@ class RequestDeleteView(generic.DeleteView):
 @login_required
 def request_detail_view(request, pk):
     request_obj = get_object_or_404(Request, pk=pk)
-    if request_obj.owner != request.user and request_obj not in get_requests_for_user(request.user):
+    if request_obj.owner != request.user and request_obj not in get_pending_requests_for_user(request.user):
         return HttpResponseBadRequest("You do not have access to this request")
     return render(request, "backend/request/detail.html", {"request": request_obj})
 
